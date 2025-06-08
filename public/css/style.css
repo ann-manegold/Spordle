@@ -1,0 +1,269 @@
+:root {
+    --bg-overlay: #123030;
+    --text-color: #e6e6e6;
+    --cell-bg: #1f3a3a;
+    --correct: #50c878;
+    --partial: #f9a825;
+    --wrong: #d32f2f;
+    --input-bg: #ffffff;
+}
+
+body.accessible {
+    --correct: #2e7d32;
+    --partial: #ffb300;
+    --wrong: #c62828;
+    --input-bg: #ffffff;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-overlay);
+    background-size: cover;
+}
+
+.overlay {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: url('../assets/images/bg_image4.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 4px black;
+}
+
+.guess-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
+}
+
+.guess-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+.guess-cell {
+    background-color: var(--cell-bg);
+    padding: 1rem;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.guess-cell.cover {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+}
+
+.guess-cell.correct {
+    background-color: var(--correct);
+    color: white;
+    aspect-ratio: 1 / 1;
+}
+
+.guess-cell.partial {
+    background-color: var(--partial);
+    color: white;
+    aspect-ratio: 1 / 1;
+}
+
+.guess-cell.wrong {
+    background-color: var(--wrong);
+    color: white;
+    aspect-ratio: 1 / 1;
+}
+
+.hint-bg-down {
+    background-image: url("../assets/images/wrong-down.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+}
+
+.hint-bg-up {
+    background-image: url("../assets/images/wrong-up.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+}
+
+.input-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
+}
+
+.input-row input {
+    flex: 1;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.streak-box {
+    background-color: var(--cell-bg);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    margin: 0 auto 0.5rem auto;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.streak-count {
+    color: var(--correct);
+}
+
+.player-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.audio-player {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--cell-bg);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.play-button {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background-color: #555;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 30%;
+    height: 100%;
+    background-color: var(--correct);
+    transition: width 0.3s ease;
+}
+
+.hint-progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    gap: 1rem;
+    background-color: var(--cell-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.progress-label {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.progress-bar-wrapper {
+    background-color: #444;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    background-color: var(--wrong);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.hint-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.hint {
+    background-color: var(--cell-bg);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: var(--text-color);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    max-width: 200px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.hint.locked {
+    color: #888;
+    cursor: not-allowed;
+    user-select: none;
+}
+
+.hint.unlocked {
+    color: var(--text-color);
+    pointer-events: auto;
+}
+
+.accessibility-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #ffffff;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.8rem;
+    z-index: 1000;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
