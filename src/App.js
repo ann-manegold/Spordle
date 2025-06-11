@@ -70,7 +70,6 @@ function GuessTable({ guesses }) {
 
 export default function App() {
     const [accessible, setAccessible] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState(null);
 
     const toggleAccessibility = () => {
         setAccessible(prev => !prev);
