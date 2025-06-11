@@ -115,7 +115,7 @@ export default function App() {
     useEffect(() => {
         const fetchPreviewUrl = async () => {
             const clientId = "69d50dbfe15447c18423fd02e688b7f4";
-            const clientSecret = "428765d9eb354d26a2c8e523375092a1";
+            const clientSecret = "";
             const trackId = "4uLU6hMCjMI75M1A2tKUQC"; // Beispiel: Shape of You
 
             try {
