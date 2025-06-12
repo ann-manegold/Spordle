@@ -77,6 +77,8 @@ h1 {
     color: var(--text-color);
     padding: 0.5rem 1rem;
     border-radius: 10px;
+    border-width: 1px;
+    border-style: solid;
     margin: 0 auto 0.5rem auto;
     font-size: 1.1rem;
     font-weight: bold;
@@ -99,6 +101,8 @@ h1 {
     background-color: var(--cell-bg);
     padding: 1rem;
     border-radius: 10px;
+    border-width: 1px;
+    border-style: solid;
     box-sizing: border-box;
     margin: 0 auto;
 }
@@ -173,6 +177,10 @@ h1 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     gap: 1rem;
+}
+
+.guess-row.top-row .guess-cell {
+    border: 1px solid #ffffff;
 }
 
 .guess-cell {

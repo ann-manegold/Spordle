@@ -76,7 +76,7 @@ function GuessRow({ guess }) {
 function GuessTable({ guesses }) {
     return (
         <>
-            <div className="guess-row">
+            <div className="guess-row top-row">
                 <div className="guess-cell"><strong>Songtitel</strong></div>
                 <div className="guess-cell"><strong>Künstler</strong></div>
                 <div className="guess-cell"><strong>Jahr</strong></div>
