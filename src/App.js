@@ -1,27 +1,48 @@
 import React, { useState, useEffect } from "react";
 
 function StreakBox({ count }) {
-    return <div className="streak-box">🥩 Streak: <span>{count}</span></div>;
+    return (
+        <div className="streak-box">
+            🥩 Streak: <span className="streak-count">{count}</span>
+        </div>
+    );
 }
 
-function HintSection() {
+function HintSection({ misses = 5 }) {
+    const handleLockedClick = (e) => {
+        e.preventDefault();
+        alert("Dieser Tipp ist noch gesperrt!");
+    };
+
     return (
         <div className="hint-progress-container">
-            <div className="progress-label">❌ Fehlversuche: 5 / 9</div>
+            <div className="progress-label">❌ Fehlversuche: {misses} / 9</div>
             <div className="progress-bar-wrapper">
-                <div className="progress-bar-fill" style={{ width: '55%' }}></div>
+                <div
+                    className="progress-bar-fill"
+                    style={{ width: `${(misses / 9) * 100}%` }}
+                ></div>
             </div>
             <div className="hint-buttons">
-                <details className="hint unlocked">
-                    <summary>💡 Tipp 1</summary>
+                <details
+                    className={`hint ${misses >= 3 ? "unlocked" : "locked"}`}
+                    onClick={misses < 3 ? handleLockedClick : undefined}
+                >
+                    <summary>💡 Tipp 1 nach 3❌</summary>
                     <p>Der Song ist sehr bekannt auf TikTok.</p>
                 </details>
-                <details className="hint locked" onClick={(e) => e.preventDefault()}>
-                    <summary>💡 Tipp 2</summary>
+                <details
+                    className={`hint ${misses >= 6 ? "unlocked" : "locked"}`}
+                    onClick={misses < 6 ? handleLockedClick : undefined}
+                >
+                    <summary>💡 Tipp 2 nach 6❌</summary>
                     <p>Der Artist kommt aus Kanada.</p>
                 </details>
-                <details className="hint locked" onClick={(e) => e.preventDefault()}>
-                    <summary>💡 Tipp 3</summary>
+                <details
+                    className={`hint ${misses >= 9 ? "unlocked" : "locked"}`}
+                    onClick={misses < 9 ? handleLockedClick : undefined}
+                >
+                    <summary>💡 Tipp 3 nach 9❌</summary>
                     <p>Der Titel enthält eine Farbe.</p>
                 </details>
             </div>
@@ -79,8 +100,6 @@ export default function App() {
         document.body.classList.toggle("accessible", accessible);
     }, [accessible]);
 
-
-
     const [streak, setStreak] = useState(3);
 
     const guesses = [
@@ -111,10 +130,12 @@ export default function App() {
                 className="accessibility-toggle"
                 aria-label="Barrierefreier Modus umschalten"
             >
+                <span className="sr-only">Barrierefreier Modus umschalten</span>
                 ♿
             </button>
 
             <h1>🎧 Spordle</h1>
+
             <div className="guess-container">
                 <StreakBox count={streak} />
                 <HintSection />

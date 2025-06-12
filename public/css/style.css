@@ -33,6 +33,31 @@ body {
     background-size: cover;
 }
 
+.accessibility-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #ffffff;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.8rem;
+    z-index: 1000;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
 h1 {
     font-size: 3rem;
     margin-bottom: 1rem;
@@ -45,82 +70,6 @@ h1 {
     gap: 1rem;
     width: 100%;
     max-width: 800px;
-}
-
-.guess-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 1rem;
-}
-
-.guess-cell {
-    background-color: var(--cell-bg);
-    padding: 1rem;
-    text-align: center;
-    border-radius: 8px;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.guess-cell.cover {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    color: white;
-    font-weight: bold;
-    position: relative;
-    overflow: hidden;
-}
-
-.guess-cell.correct {
-    background-color: var(--correct);
-    color: white;
-    aspect-ratio: 1 / 1;
-}
-
-.guess-cell.partial {
-    background-color: var(--partial);
-    color: white;
-    aspect-ratio: 1 / 1;
-}
-
-.guess-cell.wrong {
-    background-color: var(--wrong);
-    color: white;
-    aspect-ratio: 1 / 1;
-}
-
-.hint-bg-down {
-    background-image: url("../assets/images/wrong-down.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100%;
-}
-
-.hint-bg-up {
-    background-image: url("../assets/images/wrong-up.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100%;
-}
-
-.input-row {
-    display: flex;
-    gap: 1rem;
-    width: 100%;
-    max-width: 800px;
-}
-
-.input-row input {
-    flex: 1;
-    padding: 0.8rem;
-    border-radius: 8px;
-    border: none;
-    font-size: 1rem;
-    background-color: var(--input-bg);
-    color: var(--text-color);
 }
 
 .streak-box {
@@ -138,46 +87,6 @@ h1 {
 
 .streak-count {
     color: var(--correct);
-}
-
-.player-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.audio-player {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: var(--cell-bg);
-    padding: 0.75rem 1rem;
-    border-radius: 10px;
-    max-width: 800px;
-    width: 100%;
-}
-
-.play-button {
-    font-size: 1.5rem;
-    background: none;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-}
-
-.progress-bar {
-    flex: 1;
-    height: 6px;
-    background-color: #555;
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    width: 30%;
-    height: 100%;
-    background-color: var(--correct);
-    transition: width 0.3s ease;
 }
 
 .hint-progress-container {
@@ -243,27 +152,66 @@ h1 {
     pointer-events: auto;
 }
 
-.accessibility-toggle {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #ffffff;
-    color: #fff;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1.8rem;
-    z-index: 1000;
+.input-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
 }
 
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
+.input-row input {
+    flex: 1;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.guess-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+.guess-cell {
+    background-color: var(--cell-bg);
+    padding: 1rem;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    aspect-ratio: 1 / 1;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.guess-cell.cover {
+    font-weight: bold;
+}
+
+.guess-cell.correct {
+    background-color: var(--correct);
+}
+
+.guess-cell.partial {
+    background-color: var(--partial);
+}
+
+.guess-cell.wrong {
+    background-color: var(--wrong);
+}
+
+.guess-cell.wrong.hint-bg-down {
+    background-image: url("../assets/images/wrong-down.png");
+}
+
+.guess-cell.wrong.hint-bg-up {
+    background-image: url("../assets/images/wrong-up.png");
 }
