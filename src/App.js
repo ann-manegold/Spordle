@@ -29,36 +29,6 @@ function HintSection() {
     );
 }
 
-function AudioPlayer() {
-    return (
-        <div className="player-container">
-            <div className="audio-player">
-                <button className="play-button">▶️</button>
-                <div className="progress-bar">
-                    <div className="progress-fill"></div>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function SpotifyPlayer({ trackId }) {
-    return (
-        <div className="player-container">
-            <iframe
-                title="Spotify Player"
-                src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator`}
-                width="100%"
-                height="80"
-                frameBorder="0"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                style={{ borderRadius: '12px' }}
-                loading="lazy"
-            ></iframe>
-        </div>
-    );
-}
-
 function GuessInput() {
     return (
         <form className="input-row">
@@ -100,7 +70,6 @@ function GuessTable({ guesses }) {
 
 export default function App() {
     const [accessible, setAccessible] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState(null);
 
     const toggleAccessibility = () => {
         setAccessible(prev => !prev);
@@ -110,47 +79,6 @@ export default function App() {
         document.body.classList.toggle("accessible", accessible);
     }, [accessible]);
 
-
-
-    useEffect(() => {
-        const fetchPreviewUrl = async () => {
-            const clientId = "69d50dbfe15447c18423fd02e688b7f4";
-            const clientSecret = "";
-            const trackId = "4uLU6hMCjMI75M1A2tKUQC"; // Beispiel: Shape of You
-
-            try {
-                const tokenResponse = await fetch("https://accounts.spotify.com/api/token", {
-                    method: "POST",
-                    headers: {
-                        Authorization: "Basic " + btoa(`${clientId}:${clientSecret}`),
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: "grant_type=client_credentials",
-                });
-
-                const tokenData = await tokenResponse.json();
-                const token = tokenData.access_token;
-
-                const trackResponse = await fetch(
-                    `https://api.spotify.com/v1/tracks/${trackId}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                const trackData = await trackResponse.json();
-                //setPreviewUrl(trackData.preview_url);
-                setPreviewUrl("https://p.scdn.co/mp3-preview/7339548839a263fd721d01eb3364a848cad16fa7");
-                console.log("Preview URL:", trackData.preview_url);
-            } catch (error) {
-                console.error("Fehler beim Laden der preview_url:", error);
-            }
-        };
-
-        fetchPreviewUrl();
-    }, []);
 
 
     const [streak, setStreak] = useState(3);
@@ -186,23 +114,14 @@ export default function App() {
                 ♿
             </button>
 
-
-
-
             <h1>🎧 Spordle</h1>
             <div className="guess-container">
                 <StreakBox count={streak} />
                 <HintSection />
-                {previewUrl ? (
-                    <audio controls style={{ width: '100%', marginTop: '1rem' }}>
-                        <source src={previewUrl} type="audio/mpeg" />
-                        Dein Browser unterstützt kein Audio-Element.
-                    </audio>
-                ) : (
-                    <p style={{ color: '#ccc', marginTop: '1rem' }}>
-                        🎵 Keine Vorschau verfügbar für diesen Song
-                    </p>
-                )}
+                <audio controls style={{ width: '100%', marginTop: '1rem' }}>
+                    <source src="https://p.scdn.co/mp3-preview/7339548839a263fd721d01eb3364a848cad16fa7" type="audio/mpeg" />
+                    Dein Browser unterstützt kein Audio-Element.
+                </audio>
                 <GuessInput />
                 <GuessTable guesses={guesses} />
             </div>
