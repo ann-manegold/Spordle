@@ -1,0 +1,169 @@
+.admin-container {
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: var(--bg-overlay);
+    color: var(--text-color);
+}
+
+.admin-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--cell-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--correct);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.array-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.array-input input {
+    flex: 1;
+}
+
+.remove-btn {
+    background: var(--wrong);
+    border: none;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.add-btn {
+    background: var(--correct);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.add-btn:hover {
+    background: #45b567;
+}
+
+.type-selector {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.type-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.type-option input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.type-option span {
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.type-option span.selected {
+    background: var(--correct);
+    border-color: var(--correct);
+    color: white;
+}
+
+.file-info {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--correct);
+}
+
+.hints-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hints-section h3 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.message.error {
+    background-color: rgba(211, 47, 47, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+}
+
+.message.success {
+    background-color: rgba(80, 200, 120, 0.2);
+    color: var(--correct);
+    border: 1px solid var(--correct);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--correct);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background: #45b567;
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

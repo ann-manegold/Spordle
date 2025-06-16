@@ -29,7 +29,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: url('../assets/images/bg_image4.png') no-repeat center center fixed;
+    background-image: url('/public/assets/images/bg_image4.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
     background-size: cover;
 }
 
@@ -38,7 +41,7 @@ body {
     top: 1rem;
     right: 1rem;
     background: #ffffff;
-    color: #fff;
+    color: #000;
     border: none;
     padding: 0.6rem 1.2rem;
     border-radius: 6px;
@@ -156,21 +159,106 @@ h1 {
     pointer-events: auto;
 }
 
-.input-row {
-    display: flex;
-    gap: 1rem;
+.input-container {
     width: 100%;
     max-width: 800px;
 }
 
-.input-row input {
+.input-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.input-wrapper {
+    position: relative;
     flex: 1;
+}
+
+.input-row input {
+    width: 100%;
     padding: 0.8rem;
     border-radius: 8px;
     border: none;
     font-size: 1rem;
     background-color: var(--input-bg);
-    color: var(--text-color);
+    color: #333;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 0.8rem;
+    cursor: pointer;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestion-item:hover {
+    background-color: #f5f5f5;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.error-message {
+    color: var(--wrong);
+    background-color: rgba(211, 47, 47, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    text-align: center;
+    border: 1px solid var(--wrong);
+}
+
+.game-message {
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+
+.game-message.success {
+    background-color: rgba(80, 200, 120, 0.2);
+    color: var(--correct);
+    border: 2px solid var(--correct);
+}
+
+.game-message.failure {
+    background-color: rgba(211, 47, 47, 0.2);
+    color: var(--wrong);
+    border: 2px solid var(--wrong);
+}
+
+.play-again-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.8rem 2rem;
+    background-color: var(--correct);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.play-again-btn:hover {
+    background-color: #45b567;
 }
 
 .guess-row {
@@ -194,7 +282,6 @@ h1 {
     justify-content: center;
     color: white;
     aspect-ratio: 1 / 1;
-
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -202,6 +289,7 @@ h1 {
 
 .guess-cell.cover {
     font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .guess-cell.correct {
@@ -217,9 +305,9 @@ h1 {
 }
 
 .guess-cell.wrong.hint-bg-down {
-    background-image: url("../assets/images/wrong-down.png");
+    background-image: url("/public/assets/images/wrong-down.png");
 }
 
 .guess-cell.wrong.hint-bg-up {
-    background-image: url("../assets/images/wrong-up.png");
+    background-image: url("/public/assets/images/wrong-up.png");
 }
