@@ -163,7 +163,7 @@ function GuessTable({ guesses }) {
                 <div className="guess-cell"><strong>Typ</strong></div>
                 <div className="guess-cell"><strong>Länge</strong></div>
             </div>
-            {guesses.map((guess, idx) => <GuessRow key={idx} guess={guess} />)}
+            {guesses.slice().reverse().map((guess, idx) => <GuessRow key={idx} guess={guess} />)}
         </>
     );
 }

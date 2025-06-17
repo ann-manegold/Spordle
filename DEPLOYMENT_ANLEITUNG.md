@@ -1,4 +1,4 @@
-git pukll# Spordle Setup-Anleitung
+# Spordle Setup-Anleitung
 
 ## Python Interpreter Probleme (Optional)
 
@@ -21,7 +21,7 @@ Jetzt sollte es etwas laden bis die container gestartet sind und das Projekt dep
 Wenn man änderungen am code vorgenommen hat und diese nun im Browser sehen will muss man erstmal mit `strg + c` die container stoppen.
 
 Im Anschluss macht man dann `docker-compose down` um die bestehenden container zu entfernen. Jetzt kann man die container wieder neu mit `docker-compose up --build` bauen.
-## Zugriff auf die Anwendung~~~~
+## Zugriff auf die Anwendung
 
 - **Spiel:** http://localhost:3000/~~~~
 - **Admin-Bereich:** http://localhost:3000/admin (neue songs in einer Art Formular hinzufügen)

@@ -29,7 +29,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: url('/public/assets/images/bg_image4.png');
+    background-image: url('../public/assets/images/bg_image4.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
@@ -305,9 +305,9 @@ h1 {
 }
 
 .guess-cell.wrong.hint-bg-down {
-    background-image: url("/public/assets/images/wrong-down.png");
+    background-image: url("../public/assets/images/wrong-down.png");
 }
 
 .guess-cell.wrong.hint-bg-up {
-    background-image: url("/public/assets/images/wrong-up.png");
+    background-image: url("../public/assets/images/wrong-up.png");
 }
