@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: spordle-backend
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/data:/app/data
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=sqlite:////app/data/spordle.db
+    networks:
+      - spordle-network
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: spordle-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - spordle-network
+    restart: unless-stopped
+
+networks:
+  spordle-network:
+    driver: bridge
+
+volumes:
+  spordle-data:
+  spordle-uploads:

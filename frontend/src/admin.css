@@ -1,0 +1,452 @@
+:root {
+    --bg-overlay: #123030;
+    --text-color: #e6e6e6;
+    --cell-bg: #1f3a3a;
+    --correct: #50c878;
+    --partial: #f9a825;
+    --wrong: #d32f2f;
+    --input-bg: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-overlay {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('../public/assets/images/bg_image4.png');
+    background-color: var(--bg-overlay);
+}
+
+.admin-container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.admin-container h1 {
+    font-size: 3rem;
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 4px black;
+}
+
+.admin-actions {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.toggle-btn {
+    background-color: var(--correct);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-btn:hover {
+    background-color: #45b567;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.message {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    backdrop-filter: blur(10px);
+}
+
+.message.success {
+    background-color: rgba(80, 200, 120, 0.2);
+    color: var(--correct);
+    border: 1px solid var(--correct);
+}
+
+.message.error {
+    background-color: rgba(211, 47, 47, 0.2);
+    color: var(--wrong);
+    border: 1px solid var(--wrong);
+}
+
+.song-form {
+    background-color: rgba(31, 58, 58, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.song-form h2 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.cancel-edit {
+    background-color: var(--wrong);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+}
+
+.cancel-edit:hover {
+    background-color: #c62828;
+}
+
+.form-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--correct);
+    box-shadow: 0 0 0 2px rgba(80, 200, 120, 0.2);
+}
+
+.form-group input[type="file"] {
+    color: var(--text-color);
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.file-indicator {
+    color: var(--correct);
+    margin-left: 0.5rem;
+}
+
+.selected-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    min-height: 32px;
+}
+
+.genre-tag {
+    background-color: var(--correct);
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.remove-tag {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+}
+
+.remove-tag:hover {
+    opacity: 0.7;
+}
+
+.genre-selector {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+}
+
+.genre-selector > div:last-child {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.genre-selector select {
+    flex: 1;
+}
+
+.add-genre-btn {
+    background-color: var(--correct);
+    color: white;
+    border: none;
+    padding: 0 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+    align-self: flex-start;
+}
+
+.add-genre-btn:hover {
+    background-color: #45b567;
+}
+
+.custom-genre-input {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.custom-genre-input input {
+    flex: 1;
+}
+
+.custom-genre-input button {
+    background-color: var(--correct);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.custom-genre-input button:hover {
+    background-color: #45b567;
+}
+
+.type-checkboxes {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.hints-section {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.hints-section h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.hints-section input {
+    margin-bottom: 0.5rem;
+}
+
+.submit-btn {
+    background-color: var(--correct);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.submit-btn:hover {
+    background-color: #45b567;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Song List Styles */
+.song-list {
+    background-color: rgba(31, 58, 58, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.song-list h2 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.songs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.song-card {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s;
+    position: relative;
+}
+
+.song-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    border-color: var(--correct);
+}
+
+.song-card h3 {
+    color: var(--correct);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.song-info p {
+    margin: 0.3rem 0;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.song-info strong {
+    color: #ccc;
+}
+
+.file-indicators {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.indicator {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+.indicator.audio {
+    background-color: rgba(80, 200, 120, 0.2);
+}
+
+.indicator.cover {
+    background-color: rgba(249, 168, 37, 0.2);
+}
+
+.song-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.edit-btn,
+.delete-btn {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+}
+
+.edit-btn {
+    background-color: var(--partial);
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #f57c00;
+}
+
+.delete-btn {
+    background-color: var(--wrong);
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c62828;
+}
+
+.no-songs {
+    text-align: center;
+    color: #999;
+    font-size: 1.2rem;
+    margin: 3rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .songs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-overlay {
+        padding: 1rem;
+    }
+
+    .song-form,
+    .song-list {
+        padding: 1.5rem;
+    }
+
+    .type-checkboxes {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
