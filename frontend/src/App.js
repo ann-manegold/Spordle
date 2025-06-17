@@ -30,21 +30,33 @@ function HintSection({ misses = 0, hints = [] }) {
                     onClick={misses < 3 ? handleLockedClick : undefined}
                 >
                     <summary>💡 Tipp 1 nach 3❌</summary>
-                    {misses >= 3 && hints[0] && <p>{hints[0]}</p>}
+                    {misses >= 3 && hints[0] && typeof hints[0] === 'string' && <p>{hints[0]}</p>}
                 </details>
                 <details
                     className={`hint ${misses >= 6 ? "unlocked" : "locked"}`}
                     onClick={misses < 6 ? handleLockedClick : undefined}
                 >
                     <summary>💡 Tipp 2 nach 6❌</summary>
-                    {misses >= 6 && hints[1] && <p>{hints[1]}</p>}
+                    {misses >= 6 && hints[1] && typeof hints[1] === 'string' && <p>{hints[1]}</p>}
                 </details>
                 <details
                     className={`hint ${misses >= 9 ? "unlocked" : "locked"}`}
                     onClick={misses < 9 ? handleLockedClick : undefined}
                 >
-                    <summary>💡 Tipp 3 nach 9❌</summary>
-                    {misses >= 9 && hints[2] && <p>{hints[2]}</p>}
+                    <summary>🎵 Tipp 3 nach 9❌ (Längerer Ausschnitt)</summary>
+                    {misses >= 9 && hints[2] && (
+                        hints[2].type === 'audio' ? (
+                            <div style={{ padding: '10px' }}>
+                                <p style={{ marginBottom: '10px' }}>{hints[2].text}</p>
+                                <audio controls style={{ width: '100%' }}>
+                                    <source src={hints[2].url} type="audio/mpeg" />
+                                    Dein Browser unterstützt kein Audio-Element.
+                                </audio>
+                            </div>
+                        ) : (
+                            <p>{hints[2]}</p>
+                        )
+                    )}
                 </details>
             </div>
         </div>

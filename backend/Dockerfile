@@ -5,6 +5,7 @@ WORKDIR /app
 # Installiere System-Dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Kopiere requirements und installiere Python-Dependencies
@@ -15,8 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Erstelle notwendige Verzeichnisse mit korrekten Berechtigungen
-RUN mkdir -p /app/data /app/uploads && \
-    chmod -R 777 /app/data /app/uploads
+RUN mkdir -p /app/data /app/uploads /app/instance && \
+    chmod -R 777 /app/data /app/uploads /app/instance
 
 # Kopiere Entrypoint-Skript
 COPY docker-entrypoint.sh /app/
