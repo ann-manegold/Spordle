@@ -9,12 +9,6 @@ mkdir -p /app/uploads
 chmod -R 777 /app/data
 chmod -R 777 /app/uploads
 
-# Führe Migration aus falls vorhanden
-if [ -f "/app/full_migration.py" ]; then
-    echo "Führe Datenbank-Migration aus..."
-    python /app/full_migration.py
-fi
-
 # Initialisiere die Datenbank falls noch nicht vorhanden
 if [ ! -f "/app/data/spordle.db" ]; then
     echo "Erstelle neue Datenbank..."
