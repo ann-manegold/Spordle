@@ -16,7 +16,9 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 logging.basicConfig(level=logging.DEBUG)
 
 # Konfiguration
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///data/spordle.db')
+# Absolute Pfade für SQLite verwenden
+basedir = os.path.abspath(os.path.dirname(__file__))
+DATABASE_URL = os.getenv('DATABASE_URL', f'sqlite:///{os.path.join(basedir, "data", "spordle.db")}')
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads'  # Haupt-Upload-Ordner
@@ -40,7 +42,7 @@ class Song(db.Model):
     cover_path = db.Column(db.String(500))
     hint1 = db.Column(db.String(500))
     hint2 = db.Column(db.String(500))
-    hint3 = db.Column(db.String(500))
+    hint3_audio_path = db.Column(db.String(500))  # Tipp 3 ist nur Audio
 
 class GameSession(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -55,12 +57,14 @@ def allowed_file(filename, allowed_extensions):
 
 def init_database():
     """Initialisiere die Datenbank"""
-    os.makedirs('data', exist_ok=True)
+    # Erstelle data Verzeichnis im gleichen Ordner wie app.py
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+    os.makedirs(data_dir, exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     # Setze Berechtigungen (nur auf Unix-Systemen)
     try:
-        os.chmod('data', 0o777)
+        os.chmod(data_dir, 0o777)
         os.chmod(app.config['UPLOAD_FOLDER'], 0o777)
     except:
         pass  # Windows unterstützt chmod nicht
@@ -123,6 +127,22 @@ def get_audio(song_id):
     except Exception as e:
         app.logger.error(f"Fehler beim Abrufen der Audio: {str(e)}")
         return jsonify({'error': 'Fehler beim Abrufen der Audio'}), 500
+
+@app.route('/api/audio/<int:song_id>/hint')
+def get_audio_hint(song_id):
+    """Gibt die Audio-Datei für den 3. Tipp zurück"""
+    try:
+        song = Song.query.get_or_404(song_id)
+        # Verwende die spezielle Hint3-Audio-Datei, falls vorhanden
+        if song.hint3_audio_path and os.path.exists(song.hint3_audio_path):
+            return send_file(song.hint3_audio_path, mimetype='audio/mpeg')
+        # Fallback auf normale Audio-Datei
+        elif song.audio_path and os.path.exists(song.audio_path):
+            return send_file(song.audio_path, mimetype='audio/mpeg')
+        return jsonify({'error': 'Audio-Hint nicht gefunden'}), 404
+    except Exception as e:
+        app.logger.error(f"Fehler beim Abrufen des Audio-Hints: {str(e)}")
+        return jsonify({'error': 'Fehler beim Abrufen des Audio-Hints'}), 500
 
 @app.route('/api/game/<session_id>/guess', methods=['POST'])
 def make_guess(session_id):
@@ -202,8 +222,13 @@ def make_guess(session_id):
                 response['hints'].append(correct_song.hint1)
             if session.attempts >= 6 and correct_song.hint2:
                 response['hints'].append(correct_song.hint2)
-            if session.attempts >= 9 and correct_song.hint3:
-                response['hints'].append(correct_song.hint3)
+            if session.attempts >= 9 and correct_song.hint3_audio_path:
+                # Als dritter Hint: Audio-Objekt (NICHT hint3 Text!)
+                response['hints'].append({
+                    'type': 'audio',
+                    'url': f'/api/audio/{correct_song.id}/hint',
+                    'text': 'Höre eine längere Version des Songs'
+                })
 
         # Bei 10 Versuchen ist das Spiel verloren
         if session.attempts >= 10 and not is_correct:
@@ -244,9 +269,9 @@ def get_all_songs():
             'length': s.length,
             'has_audio': bool(s.audio_path),
             'has_cover': bool(s.cover_path),
+            'has_hint3_audio': bool(s.hint3_audio_path),
             'hint1': s.hint1,
-            'hint2': s.hint2,
-            'hint3': s.hint3
+            'hint2': s.hint2
         } for s in songs])
     except Exception as e:
         app.logger.error(f"Fehler beim Abrufen aller Songs: {str(e)}")
@@ -277,8 +302,7 @@ def update_song(song_id):
             song.hint1 = request.form.get('hint1') or None
         if 'hint2' in request.form:
             song.hint2 = request.form.get('hint2') or None
-        if 'hint3' in request.form:
-            song.hint3 = request.form.get('hint3') or None
+        # KEIN hint3 Text mehr!
 
         # Update Audio wenn neue Datei hochgeladen wurde
         if 'audio' in request.files:
@@ -324,6 +348,28 @@ def update_song(song_id):
                 cover_file.save(cover_path)
                 song.cover_path = cover_path
 
+        # Update Audio Hint 3 wenn neue Datei hochgeladen wurde
+        if 'hint3_audio' in request.files:
+            hint3_audio_file = request.files['hint3_audio']
+            if hint3_audio_file and hint3_audio_file.filename and allowed_file(hint3_audio_file.filename, {'mp3', 'wav', 'ogg'}):
+                # Lösche alte Hint3-Audio-Datei
+                if song.hint3_audio_path and os.path.exists(song.hint3_audio_path):
+                    try:
+                        os.remove(song.hint3_audio_path)
+                    except:
+                        pass
+
+                # Nutze denselben Song-Ordner
+                safe_folder_name = secure_filename(song.title.replace(' ', '_'))
+                unique_folder_name = f"{safe_folder_name}_{song.id}"
+                song_folder = os.path.join(app.config['UPLOAD_FOLDER'], unique_folder_name)
+                os.makedirs(song_folder, exist_ok=True)
+
+                filename = secure_filename(f"hint3_{hint3_audio_file.filename}")
+                hint3_audio_path = os.path.join(song_folder, filename)
+                hint3_audio_file.save(hint3_audio_path)
+                song.hint3_audio_path = hint3_audio_path
+
         db.session.commit()
 
         return jsonify({
@@ -360,6 +406,11 @@ def delete_song(song_id):
                 if song.cover_path and os.path.exists(song.cover_path):
                     try:
                         os.remove(song.cover_path)
+                    except:
+                        pass
+                if song.hint3_audio_path and os.path.exists(song.hint3_audio_path):
+                    try:
+                        os.remove(song.hint3_audio_path)
                     except:
                         pass
 
@@ -410,8 +461,7 @@ def add_song():
         hint2 = request.form.get('hint2')
         song.hint2 = hint2 if hint2 else None
 
-        hint3 = request.form.get('hint3')
-        song.hint3 = hint3 if hint3 else None
+        # KEIN hint3 Text mehr!
 
         # Erstelle einen sicheren Ordnernamen basierend auf dem Songtitel
         safe_folder_name = secure_filename(title.replace(' ', '_'))
@@ -440,6 +490,16 @@ def add_song():
                 cover_file.save(cover_path)
                 song.cover_path = cover_path
                 app.logger.info(f"Cover gespeichert: {cover_path}")
+
+        # Verarbeite Audio Hint 3
+        if 'hint3_audio' in request.files:
+            hint3_audio_file = request.files['hint3_audio']
+            if hint3_audio_file and hint3_audio_file.filename and allowed_file(hint3_audio_file.filename, {'mp3', 'wav', 'ogg'}):
+                filename = secure_filename(f"hint3_{hint3_audio_file.filename}")
+                hint3_audio_path = os.path.join(song_folder, filename)
+                hint3_audio_file.save(hint3_audio_path)
+                song.hint3_audio_path = hint3_audio_path
+                app.logger.info(f"Hint3-Audio gespeichert: {hint3_audio_path}")
 
         # Speichere in Datenbank
         db.session.add(song)

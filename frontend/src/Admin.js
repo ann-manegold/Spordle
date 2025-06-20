@@ -12,11 +12,11 @@ export default function Admin() {
         types: [],
         duration: '',
         hint1: '',
-        hint2: '',
-        hint3: ''
+        hint2: ''
     });
     const [audioFile, setAudioFile] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
+    const [hint3AudioFile, setHint3AudioFile] = useState(null);
     const [message, setMessage] = useState('');
     const [showList, setShowList] = useState(false);
     const [customGenre, setCustomGenre] = useState('');
@@ -158,7 +158,6 @@ export default function Admin() {
 
         formDataToSend.append('hint1', formData.hint1 || '');
         formDataToSend.append('hint2', formData.hint2 || '');
-        formDataToSend.append('hint3', formData.hint3 || '');
 
         if (audioFile) {
             formDataToSend.append('audio', audioFile);
@@ -166,6 +165,10 @@ export default function Admin() {
 
         if (coverFile) {
             formDataToSend.append('cover', coverFile);
+        }
+
+        if (hint3AudioFile) {
+            formDataToSend.append('hint3_audio', hint3AudioFile);
         }
 
         try {
@@ -225,8 +228,7 @@ export default function Admin() {
             types: song.type ? song.type.split(', ').filter(t => songTypes.includes(t)) : [],
             duration: formatDuration(song.length),
             hint1: song.hint1 || '',
-            hint2: song.hint2 || '',
-            hint3: song.hint3 || ''
+            hint2: song.hint2 || ''
         });
         setShowList(false);
     };
@@ -271,17 +273,19 @@ export default function Admin() {
             types: [],
             duration: '',
             hint1: '',
-            hint2: '',
-            hint3: ''
+            hint2: ''
         });
         setAudioFile(null);
         setCoverFile(null);
+        setHint3AudioFile(null);
         setEditingSong(null);
         // Reset file inputs
         const audioInput = document.getElementById('audio');
         const coverInput = document.getElementById('cover');
+        const hint3AudioInput = document.getElementById('hint3audio');
         if (audioInput) audioInput.value = '';
         if (coverInput) coverInput.value = '';
+        if (hint3AudioInput) hint3AudioInput.value = '';
     };
 
     return (
@@ -486,6 +490,9 @@ export default function Admin() {
                         <div className="hints-section">
                             <h3>💡 Hinweise</h3>
                             <div className="form-group">
+                                <label htmlFor="hint2text">
+                                    📋 Tipp 1: (nach 3 Fehlversuchen)
+                                </label>
                                 <input
                                     type="text"
                                     name="hint1"
@@ -496,6 +503,9 @@ export default function Admin() {
                                 />
                             </div>
                             <div className="form-group">
+                                <label htmlFor="hint2text">
+                                    📋 Tipp 2: (nach 6 Fehlversuchen)
+                                </label>
                                 <input
                                     type="text"
                                     name="hint2"
@@ -506,14 +516,17 @@ export default function Admin() {
                                 />
                             </div>
                             <div className="form-group">
+                                <label htmlFor="hint3audio">
+                                    🎵 Tipp 3: Audio-Ausschnitt (nach 9 Fehlversuchen) {editingSong && editingSong.has_hint3_audio && <span className="file-indicator">✓</span>}
+                                </label>
                                 <input
-                                    type="text"
-                                    name="hint3"
-                                    value={formData.hint3}
-                                    onChange={handleInputChange}
-                                    placeholder="Hinweis nach 9 Fehlversuchen"
+                                    type="file"
+                                    id="hint3audio"
+                                    accept=".mp3,.wav,.ogg"
+                                    onChange={(e) => setHint3AudioFile(e.target.files[0])}
                                     disabled={isLoading}
                                 />
+                                <small>Lade hier einen längeren Ausschnitt des Songs hoch, der als 3. Tipp abgespielt wird.</small>
                             </div>
                         </div>
 
@@ -538,6 +551,7 @@ export default function Admin() {
                                     <div className="file-indicators">
                                         {song.has_audio && <span className="indicator audio">🎵</span>}
                                         {song.has_cover && <span className="indicator cover">🖼️</span>}
+                                        {song.has_hint3_audio && <span className="indicator hint3">🎧</span>}
                                     </div>
                                     <div className="song-actions">
                                         <button
