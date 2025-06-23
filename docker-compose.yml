@@ -1,5 +1,4 @@
-version: '3.8'
-
+# Multistaged Docker build um eine klare struktur des back- und frontends zu bekommen
 services:
   backend:
     build: ./backend
@@ -13,12 +12,6 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - DATABASE_URL=sqlite:////app/data/spordle.db
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   frontend:
     build: ./frontend

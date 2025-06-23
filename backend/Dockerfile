@@ -2,29 +2,28 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Installiere System-Dependencies
+# Installiere system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Kopiere requirements und installiere Python-Dependencies
+# Kopiere requirements und installiere Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Kopiere App-Code
+# Kopiere den ganzen App code
 COPY . .
 
-# Erstelle notwendige Verzeichnisse mit korrekten Berechtigungen
+# Erstelle notwendige Verzeichnisse
 RUN mkdir -p /app/data /app/uploads /app/instance && \
     chmod -R 777 /app/data /app/uploads /app/instance
 
-# Kopiere Entrypoint-Skript
+# Kopiere das Entrypoint skript
 COPY docker-entrypoint.sh /app/
 RUN chmod +x /app/docker-entrypoint.sh
 
-# Exponiere Port
 EXPOSE 5000
 
-# Starte die App über Entrypoint
+# Starte die App über den entrypoint
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
