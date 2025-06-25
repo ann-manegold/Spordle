@@ -232,7 +232,7 @@ export default function App() {
             setGameLost(false);
             setSolution(null);
         } catch (error) {
-            console.error('Fehler beim Starten des Spiels:', error);
+            console.error('Fehler beim erstellen der temporären Audio dateien:', error);
         }
     };
 

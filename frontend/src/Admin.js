@@ -16,7 +16,6 @@ export default function Admin() {
     });
     const [audioFile, setAudioFile] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
-    const [hint3AudioFile, setHint3AudioFile] = useState(null);
     const [message, setMessage] = useState('');
     const [showList, setShowList] = useState(false);
     const [customGenre, setCustomGenre] = useState('');
@@ -167,10 +166,6 @@ export default function Admin() {
             formDataToSend.append('cover', coverFile);
         }
 
-        if (hint3AudioFile) {
-            formDataToSend.append('hint3_audio', hint3AudioFile);
-        }
-
         try {
             const url = editingSong
                 ? `/api/admin/songs/${editingSong.id}`
@@ -277,15 +272,12 @@ export default function Admin() {
         });
         setAudioFile(null);
         setCoverFile(null);
-        setHint3AudioFile(null);
         setEditingSong(null);
         // Reset file inputs
         const audioInput = document.getElementById('audio');
         const coverInput = document.getElementById('cover');
-        const hint3AudioInput = document.getElementById('hint3audio');
         if (audioInput) audioInput.value = '';
         if (coverInput) coverInput.value = '';
-        if (hint3AudioInput) hint3AudioInput.value = '';
     };
 
     return (
@@ -515,19 +507,6 @@ export default function Admin() {
                                     disabled={isLoading}
                                 />
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="hint3audio">
-                                    🎵 Tipp 3: Audio-Ausschnitt (nach 9 Fehlversuchen) {editingSong && editingSong.has_hint3_audio && <span className="file-indicator">✓</span>}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="hint3audio"
-                                    accept=".mp3,.wav,.ogg"
-                                    onChange={(e) => setHint3AudioFile(e.target.files[0])}
-                                    disabled={isLoading}
-                                />
-                                <small>Lade hier einen längeren Ausschnitt des Songs hoch, der als 3. Tipp abgespielt wird.</small>
-                            </div>
                         </div>
 
                         <button type="submit" className="submit-btn" disabled={isLoading}>
@@ -551,7 +530,6 @@ export default function Admin() {
                                     <div className="file-indicators">
                                         {song.has_audio && <span className="indicator audio">🎵</span>}
                                         {song.has_cover && <span className="indicator cover">🖼️</span>}
-                                        {song.has_hint3_audio && <span className="indicator hint3">🎧</span>}
                                     </div>
                                     <div className="song-actions">
                                         <button
