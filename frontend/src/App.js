@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const apiCall = async (endpoint, options = {}) => {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const response = await fetch(url, options);
+    return response;
+};
+
 function StreakBox({ count }) {
     return (
         <div className="streak-box">
@@ -138,10 +145,16 @@ function GuessRow({ guess }) {
         return value;
     };
 
+    const getCoverUrl = (coverUrl) => {
+        if (!coverUrl) return '/assets/images/logo.png';
+        if (coverUrl.startsWith('http')) return coverUrl;
+        return `${API_BASE_URL.replace('/api', '')}${coverUrl}`;
+    };
+
     return (
         <div className="guess-row">
             <div className="guess-cell cover" style={{
-                backgroundImage: guess.cover_url ? `url(${guess.cover_url})` : `url(/assets/images/logo.png)`
+                backgroundImage: `url(${getCoverUrl(guess.cover_url)})`
             }}>
                 {guess.title}
             </div>
@@ -207,7 +220,7 @@ export default function App() {
 
     useEffect(() => {
         // Lade verfügbare Songs
-        fetch('/api/songs')
+        fetch('/songs')
             .then(res => res.json())
             .then(data => setAvailableSongs(data))
             .catch(err => console.error('Fehler beim Laden der Songs:', err));
@@ -218,12 +231,17 @@ export default function App() {
 
     const startNewGame = async () => {
         try {
-            const response = await fetch('/api/game/start', {
+            const response = await fetch('/game/start', {
                 method: 'POST'
             });
             const data = await response.json();
             setSessionId(data.session_id);
-            setAudioUrl(data.audio_url);
+
+            const audioUrl = data.audio_url.startsWith('http')
+                ? data.audio_url
+                : `${API_BASE_URL.replace('/api', '')}${data.audio_url}`;
+            setAudioUrl(audioUrl);
+
             setGuesses([]);
             setHints([]);
             setMisses(0);
@@ -240,7 +258,7 @@ export default function App() {
         if (!sessionId || gameWon || gameLost) return;
 
         try {
-            const response = await fetch(`/api/game/${sessionId}/guess`, {
+            const response = await fetch(`/game/${sessionId}/guess`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,10 +283,21 @@ export default function App() {
                 setStreak(newStreak);
                 localStorage.setItem('spordle_streak', newStreak.toString());
             } else {
-                setMisses(data.attempts);
-                if (data.hints) {
-                    setHints(data.hints);
-                }
+                 setMisses(data.attempts);
+                            if (data.hints) {
+                                const processedHints = data.hints.map(hint => {
+                                    if (typeof hint === 'object' && hint.type === 'audio') {
+                                        return {
+                                            ...hint,
+                                            url: hint.url.startsWith('http')
+                                                ? hint.url
+                                                : `${API_BASE_URL.replace('/api', '')}${hint.url}`
+                                        };
+                                    }
+                                    return hint;
+                                });
+                                setHints(processedHints);
+                            }
                 if (data.attempts >= 10) {
                     setGameLost(true);
                     setSolution(data.solution);

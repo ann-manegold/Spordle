@@ -39,6 +39,7 @@ class Song(db.Model):
     hint1 = db.Column(db.String(500))
     hint2 = db.Column(db.String(500))
     hint3_audio_path = db.Column(db.String(500))
+    root_path = db.Column(db.String(500))
 
 class GameSession(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -131,20 +132,33 @@ def start_game():
         create_temp_audio_files(song)
         return jsonify({
             'session_id': session.id,
-            'audio_url': '/app/data/temp_audio/start.mp3'
+            'audio_url': f'/api/audio/{session.id}/start'
         })
     except Exception as e:
         return jsonify({'error': 'Fehler beim Starten des Spiels'}), 500
 
-@app.route('/api/audio/<int:song_id>')
-def get_audio(song_id):
-    audio_path = '/app/data/temp_audio/start.mp3'
-    return send_file(audio_path, mimetype='audio/mpeg')
+@app.route('/api/audio/<session_id>/start')
+def get_start_audio():
+    try:
+        audio_path = '/app/data/temp_audio/start.mp3'
+        if os.path.exists(audio_path):
+            return send_file(audio_path, mimetype='audio/mpeg')
+        else:
+            return jsonify({'error': 'Audio-Datei nicht gefunden'}), 404
+    except Exception as e:
+        return jsonify({'error': 'Fehler beim Abrufen der Audio-Datei'}), 500
 
-@app.route('/api/audio/<int:song_id>/hint')
-def get_audio_hint():
-    hint3_path = '/app/data/temp_audio/hint3.mp3'
-    return send_file(hint3_path, mimetype='audio/mpeg')
+
+@app.route('/api/audio/<session_id>/hint3')
+def get_hint3_audio():
+    try:
+        hint3_path = '/app/data/temp_audio/hint3.mp3'
+        if os.path.exists(hint3_path):
+            return send_file(hint3_path, mimetype='audio/mpeg')
+        else:
+            return jsonify({'error': 'Hint-Audio nicht gefunden'}), 404
+    except Exception as e:
+        return jsonify({'error': 'Fehler beim Abrufen der Hint-Audio'}), 500
 
 
 @app.route('/api/game/<session_id>/guess', methods=['POST'])
@@ -228,7 +242,7 @@ def make_guess(session_id):
             if session.attempts >= 9:
                 response['hints'].append({
                     'type': 'audio',
-                    'url': '/app/data/temp_audio/hint3.mp3',
+                    'url': f'/api/audio/{session_id}/hint3',
                     'text': 'Höre eine längere Version des Songs'
                 })
 
@@ -256,11 +270,15 @@ def get_cover(song_id):
         return jsonify({'error': 'Fehler beim Abrufen des Covers'}), 500
 
 def create_cover_from_mp3(song):
-    audio = eyed3.load(song.audio_path)
-    cover_file = audio.tag.images[0]
-
-    if cover_file != '':
-        return cover_file
+    try:
+        audio = eyed3.load(song.audio_path)
+        if audio and audio.tag and audio.tag.images:
+            cover_file = audio.tag.images[0]
+            if cover_file:
+                return cover_file
+    except Exception as e:
+        print(f"Fehler beim Extrahieren des Covers: {e}")
+    return None
 
 
 @app.route('/api/admin/songs', methods=['GET'])
@@ -285,7 +303,6 @@ def get_all_songs():
 
 @app.route('/api/admin/songs/<int:song_id>', methods=['PUT'])
 def update_song(song_id):
-    """Bearbeite einen bestehenden Song"""
     try:
         song = Song.query.get_or_404(song_id)
 
@@ -365,7 +382,7 @@ def update_song(song_id):
 
 @app.route('/api/admin/songs/<int:song_id>', methods=['DELETE'])
 def delete_song(song_id):
-    """Lösche einen Song"""
+
     try:
         song = Song.query.get_or_404(song_id)
 
@@ -401,15 +418,47 @@ def delete_song(song_id):
         return jsonify({'error': f'Fehler beim Löschen: {str(e)}'}), 500
 
 @app.route('/api/admin/songs', methods=['POST'])
+def upload_audio():
+    # Hole Formulardaten
+    title = request.form.get('title')
+    if not title:
+        return jsonify({'error': 'Titel ist erforderlich'}), 400
+
+    # Erstelle neuen Song
+    song = Song(title=title)
+    # Erstelle einen sicheren Ordnernamen basierend auf dem Songtitel
+    safe_folder_name = secure_filename(title.replace(' ', '_'))
+    unique_folder_name = f"{safe_folder_name}_{uuid.uuid4().hex[:8]}"
+
+    # Erstelle den Song-spezifischen Ordner
+    song_folder = os.path.join(app.config['UPLOAD_FOLDER'], unique_folder_name)
+    os.makedirs(song_folder, exist_ok=True)
+
+    song.root_path = song_folder
+
+    # Speicher Audio-Datei
+    if 'audio' in request.files:
+        audio_file = request.files['audio']
+        if audio_file and audio_file.filename and allowed_file(audio_file.filename, {'mp3', 'wav', 'ogg'}):
+            filename = secure_filename(f"audio_{audio_file.filename}")
+            audio_path = os.path.join(song_folder, filename)
+            audio_file.save(audio_path)
+            song.audio_path = audio_path
+
+    # Speichere in Datenbank
+    db.session.add(song)
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Song erfolgreich hinzugefügt',
+        'song_id': song.id
+    }), 201
+
+'''
+@app.route('/api/admin/songs', methods=['POST'])
 def add_song():
     try:
-        # Hole Formulardaten
-        title = request.form.get('title')
-        if not title:
-            return jsonify({'error': 'Titel ist erforderlich'}), 400
 
-        # Erstelle neuen Song
-        song = Song(title=title)
 
         # Setze optionale Felder
         artist = request.form.get('artist')
@@ -433,22 +482,7 @@ def add_song():
         hint2 = request.form.get('hint2')
         song.hint2 = hint2 if hint2 else None
 
-        # Erstelle einen sicheren Ordnernamen basierend auf dem Songtitel
-        safe_folder_name = secure_filename(title.replace(' ', '_'))
-        unique_folder_name = f"{safe_folder_name}_{uuid.uuid4().hex[:8]}"
 
-        # Erstelle den Song-spezifischen Ordner
-        song_folder = os.path.join(app.config['UPLOAD_FOLDER'], unique_folder_name)
-        os.makedirs(song_folder, exist_ok=True)
-
-        # Speicher Audio-Datei
-        if 'audio' in request.files:
-            audio_file = request.files['audio']
-            if audio_file and audio_file.filename and allowed_file(audio_file.filename, {'mp3', 'wav', 'ogg'}):
-                filename = secure_filename(f"audio_{audio_file.filename}")
-                audio_path = os.path.join(song_folder, filename)
-                audio_file.save(audio_path)
-                song.audio_path = audio_path
 
         # Speichere in Datenbank
         db.session.add(song)
@@ -462,7 +496,7 @@ def add_song():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': f'Fehler beim Speichern: {str(e)}'}), 500
-
+'''
 # Starte die App
 if __name__ == '__main__':
     init_database()
