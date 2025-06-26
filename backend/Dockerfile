@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     curl \
     ffmpeg \
+    eyed3 \
     && rm -rf /var/lib/apt/lists/*
 
 # Kopiere requirements und installiere Python dependencies

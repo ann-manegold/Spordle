@@ -7,6 +7,7 @@ import random
 from datetime import datetime
 import uuid
 from pydub import AudioSegment
+import eyed3
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -123,6 +124,7 @@ def start_game():
             return jsonify({'error': 'Keine Songs verfügbar'}), 400
 
         song = random.choice(songs)
+        song.cover_path = create_cover_from_mp3(song)
         session = GameSession(song_id=song.id)
         db.session.add(session)
         db.session.commit()
@@ -252,6 +254,14 @@ def get_cover(song_id):
         return '', 404
     except Exception as e:
         return jsonify({'error': 'Fehler beim Abrufen des Covers'}), 500
+
+def create_cover_from_mp3(song):
+    audio = eyed3.load(song.audio_path)
+    cover_file = audio.tag.images[0]
+
+    if cover_file != '':
+        return cover_file
+
 
 @app.route('/api/admin/songs', methods=['GET'])
 def get_all_songs():
@@ -439,15 +449,6 @@ def add_song():
                 audio_path = os.path.join(song_folder, filename)
                 audio_file.save(audio_path)
                 song.audio_path = audio_path
-
-        # Speicher Cover-Bild
-        if 'cover' in request.files:
-            cover_file = request.files['cover']
-            if cover_file and cover_file.filename and allowed_file(cover_file.filename, {'jpg', 'jpeg', 'png', 'gif'}):
-                filename = secure_filename(f"cover_{cover_file.filename}")
-                cover_path = os.path.join(song_folder, filename)
-                cover_file.save(cover_path)
-                song.cover_path = cover_path
 
         # Speichere in Datenbank
         db.session.add(song)

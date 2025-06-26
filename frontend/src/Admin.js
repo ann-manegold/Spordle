@@ -280,6 +280,19 @@ export default function Admin() {
         if (coverInput) coverInput.value = '';
     };
 
+    const getAudioMetadata = async () => {
+
+        try {
+            const response = await fetch('/admin/metadata', {
+                method: 'METADATA'
+            });
+            const data = await response.json();
+        } catch (error) {
+            console.error('Fehler beim abrufen der metadaten:', error);
+        }
+
+    }
+
     return (
         <div className="admin-overlay">
             <div className="admin-container">
@@ -309,6 +322,24 @@ export default function Admin() {
                                 ❌ Abbrechen
                             </button>
                         )}
+
+                        <div className="form-section">
+                            <div className="form-group">
+                                <label htmlFor="audio">
+                                    Audio-Datei (MP3) {editingSong && editingSong.has_audio &&
+                                    <span className="file-indicator">✓</span>}
+                                </label>
+                                <input
+                                    type="file"
+                                    id="audio"
+                                    accept=".mp3,.wav,.ogg"
+                                    onChange={(e) => setAudioFile(e.target.files[0])}
+                                    onChange={(e) => getAudioMetadata()}
+                                    disabled={isLoading}
+                                />
+                            </div>
+
+                        </div>
 
                         <div className="form-section">
                             <div className="form-group">
@@ -448,34 +479,6 @@ export default function Admin() {
                                         </label>
                                     ))}
                                 </div>
-                            </div>
-                        </div>
-
-                        <div className="form-section">
-                            <div className="form-group">
-                                <label htmlFor="audio">
-                                    Audio-Datei (MP3) {editingSong && editingSong.has_audio && <span className="file-indicator">✓</span>}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="audio"
-                                    accept=".mp3,.wav,.ogg"
-                                    onChange={(e) => setAudioFile(e.target.files[0])}
-                                    disabled={isLoading}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="cover">
-                                    Cover-Bild {editingSong && editingSong.has_cover && <span className="file-indicator">✓</span>}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="cover"
-                                    accept=".jpg,.jpeg,.png,.gif"
-                                    onChange={(e) => setCoverFile(e.target.files[0])}
-                                    disabled={isLoading}
-                                />
                             </div>
                         </div>
 
