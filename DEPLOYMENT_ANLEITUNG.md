@@ -1,6 +1,6 @@
 # Spordle Setup-Anleitung
 
-## Python Interpreter Probleme (Optional)
+## Python Interpreter Probleme (Optional - nur bei Problemen)
 
 Da ich jedes mal probleme mit dem code und meinem python interpreter habe kommt es im backend immer zu vielen "Errors".
 Die Anführungsstriche sind nur da weil man die Errors ignorieren kann. Hier ist auch wie:
@@ -15,7 +15,7 @@ Die Anführungsstriche sind nur da weil man die Errors ignorieren kann. Hier ist
 
 > **Wichtig!** für den nächsten Schritt wird Docker oder Docker Desktop auf dem PC/Laptop benötigt. Ich empfehle Docker Desktop.
 
-Wenn alles soweit installier ist kann man auch direkt wieder in das haupt Spordle Verzeichnis navigieren und `docker-compose up --build` ausführen.
+Wenn alles soweit installiert ist kann man auch direkt wieder in das haupt Spordle Verzeichnis navigieren und `docker-compose up --build` ausführen.
 Jetzt sollte es etwas laden bis die container gestartet sind und das Projekt deployed ist.
 
 Wenn man änderungen am code vorgenommen hat und diese nun im Browser sehen will muss man erstmal mit `strg + c` die container stoppen.
@@ -25,16 +25,11 @@ Im Anschluss macht man dann `docker-compose down` um die bestehenden container z
 
 - **Spiel:** http://localhost:3000/~~~~
 - **Admin-Bereich:** http://localhost:3000/admin (neue songs in einer Art Formular hinzufügen)
-- **Song-Übersicht:** http://localhost:3000/api/songs (kleine übersicht über die bereits hinzugefügten songs)
-
-> Kein sorge falls da keine anderen Metadaten erfasst sind als der Name. Das spiel funktioniert trotzdem.
 
 ## Für die Erfassung von neuen Songs
 
-Die Metadaten müssen alle selbst erfasst werden. Für den mp3 ausschnitt kann ich einen relativ simplen, dennoch etwas umständlichen weg empfehlen mit dem ich das bisher ganz gut hinbekommen habe:
-
-- Mithilfe von **OBS** nehme ich den gewünschten song auf und speicher mir diesen ab.
-- Um nun das format in mp3 zu bekommen habe ich mir **REAPER** installiert. Das ist eine kostenlose Tonschnitt software. Hier kann man den Song clip zurrecht schneiden und Rendern.
+Man muss lediglich eine mp3-Datei hochladen und die hinterlegten Metadaten werden direkt raus gezogen. 
+Da Sachen wie zum Beispiel die hinweise natürlich nicht in einer mp3 hinterlegt sind, muss man sowas noch selbst hinzufügen.
 
 ---
 
