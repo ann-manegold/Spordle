@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+
 function StreakBox({ count }) {
     return (
         <div className="streak-box">
@@ -44,18 +47,16 @@ function HintSection({ misses = 0, hints = [] }) {
                     onClick={misses < 9 ? handleLockedClick : undefined}
                 >
                     <summary>🎵 Tipp 3 nach 9❌ (Längerer Ausschnitt)</summary>
-                    {misses >= 9 && hints[2] && (
-                        hints[2].type === 'audio' ? (
-                            <div style={{ padding: '10px' }}>
-                                <p style={{ marginBottom: '10px' }}>{hints[2].text}</p>
-                                <audio controls style={{ width: '100%' }}>
-                                    <source src={hints[2].url} type="audio/mpeg" />
-                                    Dein Browser unterstützt kein Audio-Element.
-                                </audio>
-                            </div>
-                        ) : (
-                            <p>{hints[2]}</p>
-                        )
+                    {misses >= 9 && hints.find(hint => typeof hint === 'object' && hint.type === 'audio') && (
+                        <div style={{padding: '10px'}}>
+                            <p style={{marginBottom: '10px'}}>
+                                {hints.find(hint => typeof hint === 'object' && hint.type === 'audio').text}
+                            </p>
+                            <audio controls style={{width: '100%'}}>
+                                <source src={hints.find(hint => typeof hint === 'object' && hint.type === 'audio').url} type="audio/mpeg"/>
+                                Dein Browser unterstützt kein Audio-Element.
+                            </audio>
+                        </div>
                     )}
                 </details>
             </div>
@@ -138,10 +139,16 @@ function GuessRow({ guess }) {
         return value;
     };
 
+    const getCoverUrl = (coverUrl) => {
+        if (!coverUrl) return '/assets/images/logo.png';
+        if (coverUrl.startsWith('http')) return coverUrl;
+        return `${API_BASE_URL.replace('/api', '')}${coverUrl}`;
+    };
+
     return (
         <div className="guess-row">
             <div className="guess-cell cover" style={{
-                backgroundImage: guess.cover_url ? `url(${guess.cover_url})` : `url(/assets/images/logo.png)`
+                backgroundImage: `url(${getCoverUrl(guess.cover_url)})`
             }}>
                 {guess.title}
             </div>
@@ -218,12 +225,22 @@ export default function App() {
 
     const startNewGame = async () => {
         try {
+
+            setAudioUrl(null);
+
             const response = await fetch('/api/game/start', {
                 method: 'POST'
             });
             const data = await response.json();
             setSessionId(data.session_id);
-            setAudioUrl(data.audio_url);
+
+            const audioUrl = data.audio_url.startsWith('http')
+                ? data.audio_url
+                : `${API_BASE_URL.replace('/api', '')}${data.audio_url}`;
+
+            const audioUrlWithTimestamp = `${audioUrl}?t=${Date.now()}`;
+            setAudioUrl(audioUrlWithTimestamp);
+
             setGuesses([]);
             setHints([]);
             setMisses(0);
@@ -232,7 +249,7 @@ export default function App() {
             setGameLost(false);
             setSolution(null);
         } catch (error) {
-            console.error('Fehler beim Starten des Spiels:', error);
+            console.error('Fehler beim erstellen der temporären Audio dateien:', error);
         }
     };
 
@@ -265,10 +282,21 @@ export default function App() {
                 setStreak(newStreak);
                 localStorage.setItem('spordle_streak', newStreak.toString());
             } else {
-                setMisses(data.attempts);
-                if (data.hints) {
-                    setHints(data.hints);
-                }
+                 setMisses(data.attempts);
+                            if (data.hints) {
+                                const processedHints = data.hints.map(hint => {
+                                    if (typeof hint === 'object' && hint.type === 'audio') {
+                                        return {
+                                            ...hint,
+                                            url: hint.url.startsWith('http')
+                                                ? hint.url
+                                                : `${API_BASE_URL.replace('/api', '')}${hint.url}`
+                                        };
+                                    }
+                                    return hint;
+                                });
+                                setHints(processedHints);
+                            }
                 if (data.attempts >= 10) {
                     setGameLost(true);
                     setSolution(data.solution);
@@ -300,7 +328,7 @@ export default function App() {
                 <HintSection misses={misses} hints={hints} />
 
                 {audioUrl && (
-                    <audio controls style={{ width: '100%', marginTop: '1rem' }}>
+                    <audio key={audioUrl} controls style={{ width: '100%', marginTop: '1rem' }}>
                         <source src={audioUrl} type="audio/mpeg" />
                         Dein Browser unterstützt kein Audio-Element.
                     </audio>
@@ -316,6 +344,12 @@ export default function App() {
                 {gameLost && solution && (
                     <div className="game-message failure">
                         😢 Leider verloren! Der Song war: {solution.title}
+                        <div style={{margin: '10px 0'}}>
+                            <audio controls style={{width: '100%'}}>
+                                <source src={`/api/audio/${sessionId}/reveal`} type="audio/mpeg"/>
+                                Dein Browser unterstützt kein Audio-Element.
+                            </audio>
+                        </div>
                         <button onClick={startNewGame} className="play-again-btn">Neues Spiel</button>
                     </div>
                 )}
@@ -328,7 +362,7 @@ export default function App() {
                     />
                 )}
 
-                <GuessTable guesses={guesses} />
+                <GuessTable guesses={guesses}/>
             </div>
         </div>
     );

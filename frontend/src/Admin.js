@@ -16,7 +16,6 @@ export default function Admin() {
     });
     const [audioFile, setAudioFile] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
-    const [hint3AudioFile, setHint3AudioFile] = useState(null);
     const [message, setMessage] = useState('');
     const [showList, setShowList] = useState(false);
     const [customGenre, setCustomGenre] = useState('');
@@ -163,14 +162,6 @@ export default function Admin() {
             formDataToSend.append('audio', audioFile);
         }
 
-        if (coverFile) {
-            formDataToSend.append('cover', coverFile);
-        }
-
-        if (hint3AudioFile) {
-            formDataToSend.append('hint3_audio', hint3AudioFile);
-        }
-
         try {
             const url = editingSong
                 ? `/api/admin/songs/${editingSong.id}`
@@ -275,18 +266,42 @@ export default function Admin() {
             hint1: '',
             hint2: ''
         });
-        setAudioFile(null);
-        setCoverFile(null);
-        setHint3AudioFile(null);
         setEditingSong(null);
         // Reset file inputs
+        setAudioFile(null);
+        setCoverFile(null);
+// Reset file inputs
         const audioInput = document.getElementById('audio');
-        const coverInput = document.getElementById('cover');
-        const hint3AudioInput = document.getElementById('hint3audio');
         if (audioInput) audioInput.value = '';
-        if (coverInput) coverInput.value = '';
-        if (hint3AudioInput) hint3AudioInput.value = '';
     };
+
+    const getAudioMetadata = async (file) => {
+        if (!file) return;
+
+        try {
+            const formData = new FormData();
+            formData.append('audio', file);
+
+            const response = await fetch('/api/admin/metadata', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const metadata = await response.json();
+                // Automatisch Felder mit Metadaten füllen
+                setFormData(prev => ({
+                    ...prev,
+                    title: prev.title || metadata.title || '',
+                    artist: prev.artist || metadata.artist || '',
+                    year: prev.year || metadata.year || '',
+                    duration: prev.duration || metadata.duration || ''
+                }));
+            }
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Metadaten:', error);
+        }
+    }
 
     return (
         <div className="admin-overlay">
@@ -320,7 +335,28 @@ export default function Admin() {
 
                         <div className="form-section">
                             <div className="form-group">
-                                <label htmlFor="title">Titel *</label>
+                                <label htmlFor="audio">
+                                    Audio-Datei (MP3) {editingSong && editingSong.has_audio &&
+                                    <span className="file-indicator">✓</span>}
+                                </label>
+                                <input
+                                    type="file"
+                                    id="audio"
+                                    accept=".mp3,.wav,.ogg"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        setAudioFile(file);
+                                        getAudioMetadata(file);
+                                    }}
+                                    disabled={isLoading}
+                                />
+                            </div>
+
+                        </div>
+
+                        <div className="form-section">
+                            <div className="form-group">
+                            <label htmlFor="title">Titel *</label>
                                 <input
                                     type="text"
                                     id="title"
@@ -459,34 +495,6 @@ export default function Admin() {
                             </div>
                         </div>
 
-                        <div className="form-section">
-                            <div className="form-group">
-                                <label htmlFor="audio">
-                                    Audio-Datei (MP3) {editingSong && editingSong.has_audio && <span className="file-indicator">✓</span>}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="audio"
-                                    accept=".mp3,.wav,.ogg"
-                                    onChange={(e) => setAudioFile(e.target.files[0])}
-                                    disabled={isLoading}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="cover">
-                                    Cover-Bild {editingSong && editingSong.has_cover && <span className="file-indicator">✓</span>}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="cover"
-                                    accept=".jpg,.jpeg,.png,.gif"
-                                    onChange={(e) => setCoverFile(e.target.files[0])}
-                                    disabled={isLoading}
-                                />
-                            </div>
-                        </div>
-
                         <div className="hints-section">
                             <h3>💡 Hinweise</h3>
                             <div className="form-group">
@@ -515,19 +523,6 @@ export default function Admin() {
                                     disabled={isLoading}
                                 />
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="hint3audio">
-                                    🎵 Tipp 3: Audio-Ausschnitt (nach 9 Fehlversuchen) {editingSong && editingSong.has_hint3_audio && <span className="file-indicator">✓</span>}
-                                </label>
-                                <input
-                                    type="file"
-                                    id="hint3audio"
-                                    accept=".mp3,.wav,.ogg"
-                                    onChange={(e) => setHint3AudioFile(e.target.files[0])}
-                                    disabled={isLoading}
-                                />
-                                <small>Lade hier einen längeren Ausschnitt des Songs hoch, der als 3. Tipp abgespielt wird.</small>
-                            </div>
                         </div>
 
                         <button type="submit" className="submit-btn" disabled={isLoading}>
@@ -551,7 +546,6 @@ export default function Admin() {
                                     <div className="file-indicators">
                                         {song.has_audio && <span className="indicator audio">🎵</span>}
                                         {song.has_cover && <span className="indicator cover">🖼️</span>}
-                                        {song.has_hint3_audio && <span className="indicator hint3">🎧</span>}
                                     </div>
                                     <div className="song-actions">
                                         <button

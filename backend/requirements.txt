@@ -3,3 +3,5 @@ Flask-SQLAlchemy==3.0.5
 Flask-CORS==4.0.0
 gunicorn==21.2.0
 Werkzeug==2.3.6
+PYDUB==0.25.1
+EYED3==0.9.8
