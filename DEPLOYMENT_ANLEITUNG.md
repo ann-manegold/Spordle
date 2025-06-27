@@ -15,7 +15,8 @@ Die Anführungsstriche sind nur da weil man die Errors ignorieren kann. Hier ist
 
 > **Wichtig!** für den nächsten Schritt wird Docker oder Docker Desktop auf dem PC/Laptop benötigt. Ich empfehle Docker Desktop.
 
-Wenn alles soweit installiert ist kann man auch direkt wieder in das haupt Spordle Verzeichnis navigieren und `docker-compose up --build` ausführen.
+Wenn alles soweit installier ist kann man auch direkt wieder in das haupt Spordle Verzeichnis navigieren und `docker-compose up --build` ausführen. Je nach Docker Version stattdessen `docker compose up --build`.
+
 Jetzt sollte es etwas laden bis die container gestartet sind und das Projekt deployed ist.
 
 Wenn man änderungen am code vorgenommen hat und diese nun im Browser sehen will muss man erstmal mit `strg + c` die container stoppen.
