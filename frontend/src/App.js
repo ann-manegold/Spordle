@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import './style.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-const apiCall = async (endpoint, options = {}) => {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const response = await fetch(url, options);
-    return response;
-};
+
 
 function StreakBox({ count }) {
     return (
@@ -51,12 +47,12 @@ function HintSection({ misses = 0, hints = [] }) {
                     onClick={misses < 9 ? handleLockedClick : undefined}
                 >
                     <summary>🎵 Tipp 3 nach 9❌ (Längerer Ausschnitt)</summary>
-                    {misses >= 9 && hints[2] && (
-                        hints[2].type === 'audio' ? (
-                            <div style={{ padding: '10px' }}>
-                                <p style={{ marginBottom: '10px' }}>{hints[2].text}</p>
-                                <audio controls style={{ width: '100%' }}>
-                                    <source src={hints[2].url} type="audio/mpeg" />
+                    {misses >= 9 && hints.length > 2 && hints[2] && (
+                        typeof hints[2] === 'object' && hints[2].type === 'audio' ? (
+                            <div style={{padding: '10px'}}>
+                                <p style={{marginBottom: '10px'}}>{hints[2].text}</p>
+                                <audio controls style={{width: '100%'}}>
+                                    <source src={hints[2].url} type="audio/mpeg"/>
                                     Dein Browser unterstützt kein Audio-Element.
                                 </audio>
                             </div>
@@ -220,7 +216,7 @@ export default function App() {
 
     useEffect(() => {
         // Lade verfügbare Songs
-        fetch('/songs')
+        fetch('/api/songs')
             .then(res => res.json())
             .then(data => setAvailableSongs(data))
             .catch(err => console.error('Fehler beim Laden der Songs:', err));
@@ -231,7 +227,7 @@ export default function App() {
 
     const startNewGame = async () => {
         try {
-            const response = await fetch('/game/start', {
+            const response = await fetch('/api/game/start', {
                 method: 'POST'
             });
             const data = await response.json();
@@ -258,7 +254,7 @@ export default function App() {
         if (!sessionId || gameWon || gameLost) return;
 
         try {
-            const response = await fetch(`/game/${sessionId}/guess`, {
+            const response = await fetch(`/api/game/${sessionId}/guess`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -345,6 +341,12 @@ export default function App() {
                 {gameLost && solution && (
                     <div className="game-message failure">
                         😢 Leider verloren! Der Song war: {solution.title}
+                        <div style={{margin: '10px 0'}}>
+                            <audio controls style={{width: '100%'}}>
+                                <source src={`/api/audio/${sessionId}/reveal`} type="audio/mpeg"/>
+                                Dein Browser unterstützt kein Audio-Element.
+                            </audio>
+                        </div>
                         <button onClick={startNewGame} className="play-again-btn">Neues Spiel</button>
                     </div>
                 )}
@@ -357,7 +359,7 @@ export default function App() {
                     />
                 )}
 
-                <GuessTable guesses={guesses} />
+                <GuessTable guesses={guesses}/>
             </div>
         </div>
     );

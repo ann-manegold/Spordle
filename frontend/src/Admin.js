@@ -162,10 +162,6 @@ export default function Admin() {
             formDataToSend.append('audio', audioFile);
         }
 
-        if (coverFile) {
-            formDataToSend.append('cover', coverFile);
-        }
-
         try {
             const url = editingSong
                 ? `/api/admin/songs/${editingSong.id}`
@@ -270,27 +266,41 @@ export default function Admin() {
             hint1: '',
             hint2: ''
         });
-        setAudioFile(null);
-        setCoverFile(null);
         setEditingSong(null);
         // Reset file inputs
+        setAudioFile(null);
+        setCoverFile(null);
+// Reset file inputs
         const audioInput = document.getElementById('audio');
-        const coverInput = document.getElementById('cover');
         if (audioInput) audioInput.value = '';
-        if (coverInput) coverInput.value = '';
     };
 
-    const getAudioMetadata = async () => {
+    const getAudioMetadata = async (file) => {
+        if (!file) return;
 
         try {
-            const response = await fetch('/admin/metadata', {
-                method: 'METADATA'
-            });
-            const data = await response.json();
-        } catch (error) {
-            console.error('Fehler beim abrufen der metadaten:', error);
-        }
+            const formData = new FormData();
+            formData.append('audio', file);
 
+            const response = await fetch('/api/admin/metadata', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const metadata = await response.json();
+                // Automatisch Felder mit Metadaten füllen
+                setFormData(prev => ({
+                    ...prev,
+                    title: prev.title || metadata.title || '',
+                    artist: prev.artist || metadata.artist || '',
+                    year: prev.year || metadata.year || '',
+                    duration: prev.duration || metadata.duration || ''
+                }));
+            }
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Metadaten:', error);
+        }
     }
 
     return (
@@ -333,8 +343,11 @@ export default function Admin() {
                                     type="file"
                                     id="audio"
                                     accept=".mp3,.wav,.ogg"
-                                    onChange={(e) => setAudioFile(e.target.files[0])}
-                                    onChange={(e) => getAudioMetadata()}
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        setAudioFile(file);
+                                        getAudioMetadata(file);
+                                    }}
                                     disabled={isLoading}
                                 />
                             </div>
@@ -343,7 +356,7 @@ export default function Admin() {
 
                         <div className="form-section">
                             <div className="form-group">
-                                <label htmlFor="title">Titel *</label>
+                            <label htmlFor="title">Titel *</label>
                                 <input
                                     type="text"
                                     id="title"
