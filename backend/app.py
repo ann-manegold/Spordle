@@ -226,8 +226,14 @@ def make_guess(session_id):
                 'artist': {
                     'value': guessed_song.artist or 'Unbekannt',
                     'status': 'correct' if guessed_song.artist == correct_song.artist else
-                    'partial' if correct_song.artist and guessed_song.artist and
-                                 any(a in correct_song.artist.lower() for a in guessed_song.artist.lower().split()) else 'wrong'
+                    'partial' if correct_song.artist and guessed_song.artist and (
+                            any(word.strip().lower() in correct_song.artist.lower()
+                                for word in guessed_song.artist.split()
+                                if len(word.strip()) > 2) or
+                            any(word.strip().lower() in guessed_song.artist.lower()
+                                for word in correct_song.artist.split()
+                                if len(word.strip()) > 2)
+                    ) else 'wrong'
                 },
                 'year': {
                     'value': guessed_song.year or 'Unbekannt',

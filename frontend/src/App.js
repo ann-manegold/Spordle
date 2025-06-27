@@ -47,18 +47,16 @@ function HintSection({ misses = 0, hints = [] }) {
                     onClick={misses < 9 ? handleLockedClick : undefined}
                 >
                     <summary>🎵 Tipp 3 nach 9❌ (Längerer Ausschnitt)</summary>
-                    {misses >= 9 && hints.length > 2 && hints[2] && (
-                        typeof hints[2] === 'object' && hints[2].type === 'audio' ? (
-                            <div style={{padding: '10px'}}>
-                                <p style={{marginBottom: '10px'}}>{hints[2].text}</p>
-                                <audio controls style={{width: '100%'}}>
-                                    <source src={hints[2].url} type="audio/mpeg"/>
-                                    Dein Browser unterstützt kein Audio-Element.
-                                </audio>
-                            </div>
-                        ) : (
-                            <p>{hints[2]}</p>
-                        )
+                    {misses >= 9 && hints.find(hint => typeof hint === 'object' && hint.type === 'audio') && (
+                        <div style={{padding: '10px'}}>
+                            <p style={{marginBottom: '10px'}}>
+                                {hints.find(hint => typeof hint === 'object' && hint.type === 'audio').text}
+                            </p>
+                            <audio controls style={{width: '100%'}}>
+                                <source src={hints.find(hint => typeof hint === 'object' && hint.type === 'audio').url} type="audio/mpeg"/>
+                                Dein Browser unterstützt kein Audio-Element.
+                            </audio>
+                        </div>
                     )}
                 </details>
             </div>
@@ -227,6 +225,9 @@ export default function App() {
 
     const startNewGame = async () => {
         try {
+
+            setAudioUrl(null);
+
             const response = await fetch('/api/game/start', {
                 method: 'POST'
             });
@@ -236,7 +237,9 @@ export default function App() {
             const audioUrl = data.audio_url.startsWith('http')
                 ? data.audio_url
                 : `${API_BASE_URL.replace('/api', '')}${data.audio_url}`;
-            setAudioUrl(audioUrl);
+
+            const audioUrlWithTimestamp = `${audioUrl}?t=${Date.now()}`;
+            setAudioUrl(audioUrlWithTimestamp);
 
             setGuesses([]);
             setHints([]);
@@ -325,7 +328,7 @@ export default function App() {
                 <HintSection misses={misses} hints={hints} />
 
                 {audioUrl && (
-                    <audio controls style={{ width: '100%', marginTop: '1rem' }}>
+                    <audio key={audioUrl} controls style={{ width: '100%', marginTop: '1rem' }}>
                         <source src={audioUrl} type="audio/mpeg" />
                         Dein Browser unterstützt kein Audio-Element.
                     </audio>
