@@ -337,6 +337,12 @@ export default function App() {
                 {gameWon && (
                     <div className="game-message success">
                         🎉 Glückwunsch! Du hast den Song erraten!
+                        <div style={{margin: '10px 0'}}>
+                            <audio controls style={{width: '100%'}}>
+                                <source src={`/api/audio/${sessionId}/reveal`} type="audio/mpeg"/>
+                                Dein Browser unterstützt kein Audio-Element.
+                            </audio>
+                        </div>
                         <button onClick={startNewGame} className="play-again-btn">Neues Spiel</button>
                     </div>
                 )}
