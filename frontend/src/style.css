@@ -160,14 +160,17 @@ h1 {
 }
 
 .input-container {
-    width: 100%;
     max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .input-row {
     display: flex;
     gap: 1rem;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .input-wrapper {
@@ -177,6 +180,7 @@ h1 {
 
 .input-row input {
     width: 100%;
+    box-sizing: border-box;
     padding: 0.8rem;
     border-radius: 8px;
     border: none;
