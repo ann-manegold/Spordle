@@ -1,10 +1,10 @@
 # 🎧 Spordle
 
-Ein musik-basiertes Ratespiel im Stil von Wordle, bei dem Spieler Songs anhand kurzer Audio-Ausschnitte erraten müssen.
+Ein Musik-basiertes Ratespiel im Stil von Wordle, bei dem Songs anhand kurzer Audio-Ausschnitte erraten werden müssen.
 
 ## 📋 Übersicht
 
-Spordle ist ein interaktives Webspiel, das Musikliebhaber herausfordert, Songs anhand kurzer Audio-Clips zu identifizieren. Das Spiel kombiniert die Mechanik von Wordle mit Musikerkennung und bietet ein progressives Hinweissystem, das bei falschen Antworten aktiviert wird.
+Spordle ist ein interaktives Webspiel, das Musikliebhabende herausfordert, Songs anhand kurzer Audio-Clips zu identifizieren. Das Spiel kombiniert die Mechanik von Wordle mit Musikerkennung und bietet ein progressives Hinweissystem, das bei falschen Antworten aktiviert wird.
 
 ## ✨ Features
 
@@ -33,6 +33,12 @@ Spordle ist ein interaktives Webspiel, das Musikliebhaber herausfordert, Songs a
 - **SQLite**: Lokale Datenbank
 - **PyDub**: Audio-Verarbeitung
 - **eyeD3**: MP3-Metadaten-Extraktion
+
+## KI
+- Inline Completion von Github-Copilot
+- ChatGPT unterstützend beim Übernehmen des Designs auf die Admin-Page und beim Trouble Shooting
+- ChatGPT beim erstellen der Readme und teilweise bei den Kommentaren
+- Gemini/ Microsoft Copilot Suchvorschläge bei Google-Suchen
 
 ## 🚀 Installation & Setup
 
