@@ -191,7 +191,7 @@ function GuessTable({ guesses }) {
 }
 
 export default function App() {
-    const [showInstructions, setShowInstructions] = useState(true);
+    const [showInstructions, setShowInstructions] = useState(false);
     const [accessible, setAccessible] = useState(false);
     const [sessionId, setSessionId] = useState(null);
     const [audioUrl, setAudioUrl] = useState(null);
@@ -211,7 +211,7 @@ export default function App() {
     useEffect(() => {
         if (!localStorage.getItem('spordle_seen_instructions')) {
             setShowInstructions(true);
-            localStorage.setItem('spordle_seen_instructions', '1');
+            localStorage.setItem('spordle_seen_instructions', 'true');
         }
     }, []);
 

@@ -61,8 +61,8 @@ body {
 }
 
 .instructions-content {
-    background: #fff;
-    color: #222;
+    background: var(--cell-bg);
+    color: white;
     padding: 2rem 2.5rem 1.5rem 2.5rem;
     border-radius: 12px;
     max-width: 400px;
