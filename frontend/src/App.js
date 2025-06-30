@@ -22,6 +22,9 @@ function HintSection({ misses = 0, hints = [] }) {
         <div className="hint-progress-container">
             <div className="progress-label">❌ Fehlversuche: {misses} / 9</div>
             <div className="progress-bar-wrapper">
+                <div className="progress-marker marker-3"></div>
+                <div className="progress-marker marker-6"></div>
+                <div className="progress-marker marker-9"></div>
                 <div
                     className="progress-bar-fill"
                     style={{ width: `${(misses / 9) * 100}%` }}
@@ -32,21 +35,21 @@ function HintSection({ misses = 0, hints = [] }) {
                     className={`hint ${misses >= 3 ? "unlocked" : "locked"}`}
                     onClick={misses < 3 ? handleLockedClick : undefined}
                 >
-                    <summary>💡 Tipp 1 nach 3❌</summary>
+                    <summary>💡 Fun Fact</summary>
                     {misses >= 3 && hints[0] && typeof hints[0] === 'string' && <p>{hints[0]}</p>}
                 </details>
                 <details
                     className={`hint ${misses >= 6 ? "unlocked" : "locked"}`}
                     onClick={misses < 6 ? handleLockedClick : undefined}
                 >
-                    <summary>💡 Tipp 2 nach 6❌</summary>
+                    <summary>🖼 Cover</summary>
                     {misses >= 6 && hints[1] && typeof hints[1] === 'string' && <p>{hints[1]}</p>}
                 </details>
                 <details
                     className={`hint ${misses >= 9 ? "unlocked" : "locked"}`}
                     onClick={misses < 9 ? handleLockedClick : undefined}
                 >
-                    <summary>🎵 Tipp 3 nach 9❌ (Längerer Ausschnitt)</summary>
+                    <summary>🎵 Länger hören</summary>
                     {misses >= 9 && hints.find(hint => typeof hint === 'object' && hint.type === 'audio') && (
                         <div style={{padding: '10px'}}>
                             <p style={{marginBottom: '10px'}}>
