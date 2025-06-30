@@ -267,7 +267,7 @@ def make_guess(session_id):
         hints = []
         if session.attempts >= 3 and correct_song.hint1:
             hints.append(correct_song.hint1)
-        if session.attempts >= 6 and correct_song.hint2:
+        if session.attempts >= 6:
             hints.append({
                 'type': 'cover',
                 'url': f'/api/cover/{correct_song.id}' if correct_song.cover_path else None,
