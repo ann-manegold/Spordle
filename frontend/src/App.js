@@ -380,14 +380,39 @@ export default function App() {
                             onClick={() => setShowInstructions(false)}
                             aria-label="Anleitung schließen"
                         >✖</button>
-                        <h2>Spieleanleitung</h2>
-                        <ul>
-                            <li>Errate den Song anhand des kurzen Audioausschnitts.</li>
-                            <li>Gib einen Songtitel ein und bestätige.</li>
-                            <li>Nach 3, 6 und 9 Fehlversuchen erhältst du Tipps.</li>
-                            <li>Du hast maximal 10 Versuche pro Runde.</li>
-                        </ul>
-                        <p>Viel Spaß beim Spielen!</p>
+                        <h2 style={{textAlign: 'center', marginBottom: '1.5rem'}}>🚀 Spieleanleitung</h2>
+                        <ol className="instructions-list">
+                            <li>
+                                <span className="icon-step">🎧</span>
+                                <span className="step-text">
+                        Höre dir den kurzen Audioausschnitt an und versuche, den Song zu erkennen.
+                    </span>
+                            </li>
+                            <li>
+                                <span className="icon-step">⌨️</span>
+                                <span className="step-text">
+                        Gib deinen Tipp für den Songtitel ein und bestätige ihn.
+                    </span>
+                            </li>
+                            <li>
+                                <span className="icon-step">💡</span>
+                                <span className="step-text">
+                        Nach <b>3</b>, <b>6</b> und <b>9</b> Fehlversuchen erhältst du hilfreiche Tipps!
+                    </span>
+                            </li>
+                            <li>
+                                <span className="icon-step">🎯</span>
+                                <span className="step-text">
+                        Du hast maximal <b>10</b> Versuche pro Runde. Nutze sie klug!
+                    </span>
+                            </li>
+                        </ol>
+                        <div className="instructions-hint">
+                            <span className="hint-icon">🎉</span>
+                            <span>
+                    Viel Spaß beim Spielen und knacke den Highscore!
+                </span>
+                        </div>
                     </div>
                 </div>
             )}
