@@ -1,8 +1,3 @@
-"""
-Initialisierungsskript für die Spordle-Datenbank
-Erstellt die Datenbank und Verzeichnisse, falls sie nicht existieren
-"""
-
 import os
 import sys
 from pathlib import Path
