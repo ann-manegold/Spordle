@@ -28,6 +28,9 @@ function HintSection({ misses = 0, hints = [] }) {
         <div className="hint-progress-container">
             <div className="progress-label">❌ Fehlversuche: {misses} / 9</div>
             <div className="progress-bar-wrapper">
+                <div className="progress-marker marker-3"></div>
+                <div className="progress-marker marker-6"></div>
+                <div className="progress-marker marker-9"></div>
                 <div
                     className="progress-bar-fill"
                     style={{ width: `${(misses / 9) * 100}%` }}
@@ -38,14 +41,15 @@ function HintSection({ misses = 0, hints = [] }) {
                     className={`hint ${misses >= 3 ? "unlocked" : "locked"}`}
                     onClick={misses < 3 ? handleLockedClick : undefined}
                 >
-                    <summary>💡 Tipp 1 nach 3❌</summary>
+                    <summary>💡 Fun Fact</summary>
                     {misses >= 3 && hints[0] && typeof hints[0] === 'string' && <p>{hints[0]}</p>}
                 </details>
                 <details
                     className={`hint ${misses >= 6 ? "unlocked" : "locked"}`}
                     onClick={misses < 6 ? handleLockedClick : undefined}
                 >
-                    <summary>💡 Tipp 2 nach 6❌</summary>
+
+                    <summary>🖼 Cover</summary>
                     {misses >= 6 && (() => {
                         const coverHint = hints.find(hint => typeof hint === 'object' && hint.type === 'cover');
                         if (coverHint) {
@@ -79,12 +83,13 @@ function HintSection({ misses = 0, hints = [] }) {
                         }
                         return null;
                     })()}
+
                 </details>
                 <details
                     className={`hint ${misses >= 9 ? "unlocked" : "locked"}`}
                     onClick={misses < 9 ? handleLockedClick : undefined}
                 >
-                    <summary>🎵 Tipp 3 nach 9❌ (Längerer Ausschnitt)</summary>
+                    <summary>🎵 Länger hören</summary>
                     {misses >= 9 && hints.find(hint => typeof hint === 'object' && hint.type === 'audio') && (
                         <div style={{padding: '10px'}}>
                             <p style={{marginBottom: '10px'}}>
@@ -226,6 +231,7 @@ function GuessTable({ guesses }) {
 }
 
 export default function App() {
+    const [showInstructions, setShowInstructions] = useState(false);
     const [accessible, setAccessible] = useState(false);
     const [sessionId, setSessionId] = useState(null);
     const [audioUrl, setAudioUrl] = useState(null);
@@ -241,6 +247,13 @@ export default function App() {
         const saved = localStorage.getItem('spordle_streak');
         return saved ? parseInt(saved) : 0;
     });
+
+    useEffect(() => {
+        if (!localStorage.getItem('spordle_seen_instructions')) {
+            setShowInstructions(true);
+            localStorage.setItem('spordle_seen_instructions', 'true');
+        }
+    }, []);
 
     const toggleAccessibility = () => {
         setAccessible(prev => !prev);
@@ -350,6 +363,35 @@ export default function App() {
 
     return (
         <div className="overlay">
+            <button
+                className="instructions-toggle"
+                onClick={() => setShowInstructions(true)}
+                aria-label="Spieleanleitung anzeigen"
+            >
+                <span className="sr-only">Spieleanleitung anzeigen</span>
+                ❓
+            </button>
+
+            {showInstructions && (
+                <div className="instructions-modal">
+                    <div className="instructions-content">
+                        <button
+                            className="instructions-close"
+                            onClick={() => setShowInstructions(false)}
+                            aria-label="Anleitung schließen"
+                        >✖</button>
+                        <h2>Spieleanleitung</h2>
+                        <ul>
+                            <li>Errate den Song anhand des kurzen Audioausschnitts.</li>
+                            <li>Gib einen Songtitel ein und bestätige.</li>
+                            <li>Nach 3, 6 und 9 Fehlversuchen erhältst du Tipps.</li>
+                            <li>Du hast maximal 10 Versuche pro Runde.</li>
+                        </ul>
+                        <p>Viel Spaß beim Spielen!</p>
+                    </div>
+                </div>
+            )}
+
             <button
                 onClick={toggleAccessibility}
                 className="accessibility-toggle"
