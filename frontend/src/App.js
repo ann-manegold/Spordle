@@ -421,7 +421,7 @@ export default function App() {
                             backgroundImage: 'url("/assets/images/wrong-down.png")',
                             backgroundSize: 'cover'
                         }}></span>
-                        Jahr/Länge zu niedrig
+                        Jahr/Länge zu hoch
                     </span>
                         <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
                         <span style={{
@@ -433,7 +433,7 @@ export default function App() {
                             backgroundImage: 'url("/assets/images/wrong-up.png")',
                             backgroundSize: 'cover'
                         }}></span>
-                        Jahr/Länge zu hoch
+                        Jahr/Länge zu niedrig
                     </span>
                     </div>
                 </div>
