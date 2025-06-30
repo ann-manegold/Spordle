@@ -191,6 +191,7 @@ function GuessTable({ guesses }) {
 }
 
 export default function App() {
+    const [showInstructions, setShowInstructions] = useState(true);
     const [accessible, setAccessible] = useState(false);
     const [sessionId, setSessionId] = useState(null);
     const [audioUrl, setAudioUrl] = useState(null);
@@ -206,6 +207,13 @@ export default function App() {
         const saved = localStorage.getItem('spordle_streak');
         return saved ? parseInt(saved) : 0;
     });
+
+    useEffect(() => {
+        if (!localStorage.getItem('spordle_seen_instructions')) {
+            setShowInstructions(true);
+            localStorage.setItem('spordle_seen_instructions', '1');
+        }
+    }, []);
 
     const toggleAccessibility = () => {
         setAccessible(prev => !prev);
@@ -315,6 +323,35 @@ export default function App() {
 
     return (
         <div className="overlay">
+            <button
+                className="instructions-toggle"
+                onClick={() => setShowInstructions(true)}
+                aria-label="Spieleanleitung anzeigen"
+            >
+                <span className="sr-only">Spieleanleitung anzeigen</span>
+                ❓
+            </button>
+
+            {showInstructions && (
+                <div className="instructions-modal">
+                    <div className="instructions-content">
+                        <button
+                            className="instructions-close"
+                            onClick={() => setShowInstructions(false)}
+                            aria-label="Anleitung schließen"
+                        >✖</button>
+                        <h2>Spieleanleitung</h2>
+                        <ul>
+                            <li>Errate den Song anhand des kurzen Audioausschnitts.</li>
+                            <li>Gib einen Songtitel ein und bestätige.</li>
+                            <li>Nach 3, 6 und 9 Fehlversuchen erhältst du Tipps.</li>
+                            <li>Du hast maximal 10 Versuche pro Runde.</li>
+                        </ul>
+                        <p>Viel Spaß beim Spielen!</p>
+                    </div>
+                </div>
+            )}
+
             <button
                 onClick={toggleAccessibility}
                 className="accessibility-toggle"
