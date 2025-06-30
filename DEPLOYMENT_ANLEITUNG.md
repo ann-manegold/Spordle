@@ -22,6 +22,22 @@ Jetzt sollte es etwas laden bis die container gestartet sind und das Projekt dep
 Wenn man änderungen am code vorgenommen hat und diese nun im Browser sehen will muss man erstmal mit `strg + c` die container stoppen.
 
 Im Anschluss macht man dann `docker-compose down` um die bestehenden container zu entfernen. Jetzt kann man die container wieder neu mit `docker-compose up --build` bauen.
+### Probleme bei dem Docker Deployment 
+Es kann sein, dass es beim Docker Deployment zu einem fehler kommt der in etwa so aussehen kann: 
+>spordle-backend   | exec /app/docker-entrypoint.sh: no such file or directory
+spordle-backend exited with code 255
+
+Ich verstehe nicht ganz weshalb das so ist, da die Datei existiert und diese auch richtig in den Container kopiert wird...
+Die einfache Lösung die bisher **immer** geklappt hat sieht so aus: 
+- Man kopiert den Inhalt aus der `docker-entrypoint.sh` Datei
+- Löscht die alte Datei
+- Erstellt eine neue Datei mit dem selben Namen (`docker-entrypoint.sh`)
+- Und fügt den Inhalt wieder hinzu
+
+Jetzt sollte das ganze auch wieder richtig Deployen :D
+
+
+
 ## Zugriff auf die Anwendung
 
 - **Spiel:** http://localhost:3000/~~~~

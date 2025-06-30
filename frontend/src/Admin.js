@@ -11,8 +11,7 @@ export default function Admin() {
         genres: [],
         types: [],
         duration: '',
-        hint1: '',
-        hint2: ''
+        hint1: ''
     });
     const [audioFile, setAudioFile] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
@@ -218,8 +217,7 @@ export default function Admin() {
             genres: song.genre ? song.genre.split(', ').map(g => g.trim()) : [],
             types: song.type ? song.type.split(', ').filter(t => songTypes.includes(t)) : [],
             duration: formatDuration(song.length),
-            hint1: song.hint1 || '',
-            hint2: song.hint2 || ''
+            hint1: song.hint1 || ''
         });
         setShowList(false);
     };
@@ -263,8 +261,7 @@ export default function Admin() {
             genres: [],
             types: [],
             duration: '',
-            hint1: '',
-            hint2: ''
+            hint1: ''
         });
         setEditingSong(null);
         // Reset file inputs
@@ -507,19 +504,6 @@ export default function Admin() {
                                     value={formData.hint1}
                                     onChange={handleInputChange}
                                     placeholder="Hinweis nach 3 Fehlversuchen"
-                                    disabled={isLoading}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="hint2text">
-                                    📋 Tipp 2: (nach 6 Fehlversuchen)
-                                </label>
-                                <input
-                                    type="text"
-                                    name="hint2"
-                                    value={formData.hint2}
-                                    onChange={handleInputChange}
-                                    placeholder="Hinweis nach 6 Fehlversuchen"
                                     disabled={isLoading}
                                 />
                             </div>

@@ -18,6 +18,12 @@ function HintSection({ misses = 0, hints = [] }) {
         alert("Dieser Tipp ist noch gesperrt!");
     };
 
+    const getCoverUrl = (coverUrl) => {
+        if (!coverUrl) return null;
+        if (coverUrl.startsWith('http')) return coverUrl;
+        return `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${coverUrl}`;
+    };
+
     return (
         <div className="hint-progress-container">
             <div className="progress-label">❌ Fehlversuche: {misses} / 9</div>
@@ -42,8 +48,42 @@ function HintSection({ misses = 0, hints = [] }) {
                     className={`hint ${misses >= 6 ? "unlocked" : "locked"}`}
                     onClick={misses < 6 ? handleLockedClick : undefined}
                 >
+
                     <summary>🖼 Cover</summary>
-                    {misses >= 6 && hints[1] && typeof hints[1] === 'string' && <p>{hints[1]}</p>}
+                    {misses >= 6 && (() => {
+                        const coverHint = hints.find(hint => typeof hint === 'object' && hint.type === 'cover');
+                        if (coverHint) {
+                            return (
+                                <div style={{padding: '10px', textAlign: 'center'}}>
+                                    <p style={{marginBottom: '10px'}}>
+                                        {coverHint.text}
+                                    </p>
+                                    {coverHint.url ? (
+                                        <img
+                                            src={getCoverUrl(coverHint.url)}
+                                            alt="Song Cover"
+                                            className="blurry_hint2"
+                                            style={{
+                                                maxWidth: '200px',
+                                                maxHeight: '200px',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
+                                            }}
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'block';
+                                            }}
+                                        />
+                                    ) : (
+                                        <p style={{color: '#888'}}>Kein Cover verfügbar</p>
+                                    )}
+                                    <div style={{display: 'none', color: '#888'}}>Cover konnte nicht geladen werden</div>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })()}
+
                 </details>
                 <details
                     className={`hint ${misses >= 9 ? "unlocked" : "locked"}`}
@@ -143,7 +183,7 @@ function GuessRow({ guess }) {
     };
 
     const getCoverUrl = (coverUrl) => {
-        if (!coverUrl) return '/assets/images/logo.png';
+        if (!coverUrl) return null;
         if (coverUrl.startsWith('http')) return coverUrl;
         return `${API_BASE_URL.replace('/api', '')}${coverUrl}`;
     };
@@ -296,10 +336,10 @@ export default function App() {
                  setMisses(data.attempts);
                             if (data.hints) {
                                 const processedHints = data.hints.map(hint => {
-                                    if (typeof hint === 'object' && hint.type === 'audio') {
+                                    if (typeof hint === 'object' && (hint.type === 'audio' || hint.type === 'cover')) {
                                         return {
                                             ...hint,
-                                            url: hint.url.startsWith('http')
+                                            url: hint.url && hint.url.startsWith('http')
                                                 ? hint.url
                                                 : `${API_BASE_URL.replace('/api', '')}${hint.url}`
                                         };
