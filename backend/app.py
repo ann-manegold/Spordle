@@ -270,14 +270,12 @@ def make_guess(session_id):
         if session.attempts >= 6:
             hints.append({
                 'type': 'cover',
-                'url': f'/api/cover/{correct_song.id}' if correct_song.cover_path else None,
-                'text': 'Das Cover des Songs'
+                'url': f'/api/cover/{correct_song.id}' if correct_song.cover_path else None
             })
         if session.attempts >= 9:
             hints.append({
                 'type': 'audio',
-                'url': f'/api/audio/{session_id}/hint3',
-                'text': 'Höre eine längere Version des Songs'
+                'url': f'/api/audio/{session_id}/hint3'
             })
 
         if hints:
