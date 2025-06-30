@@ -361,6 +361,86 @@ export default function App() {
         }
     };
 
+    function GuessLegend() {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                margin: '1.5rem auto 0 auto',
+                width: '100%',
+            }}>
+                <div style={{
+                    background: 'rgba(31,58,58,0.98)',
+                    border: '1px solid #ffffff',
+                    borderRadius: '10px',
+                    padding: '1rem',
+                    color: '#e6e6e6',
+                    maxWidth: 400,
+                    width: '100%',
+                    fontSize: '1rem'
+                }}>
+                    <strong>Legende:</strong>
+                    <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.7rem', marginTop: '0.7rem'}}>
+                    <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: 18, height: 18,
+                            borderRadius: 4,
+                            background: 'var(--correct)',
+                            border: '1px solid #fff'
+                        }}></span>
+                        Richtig
+                    </span>
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: 18, height: 18,
+                            borderRadius: 4,
+                            background: 'var(--partial)',
+                            border: '1px solid #fff'
+                        }}></span>
+                        Teilweise richtig
+                    </span>
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: 18, height: 18,
+                            borderRadius: 4,
+                            background: 'var(--wrong)',
+                            border: '1px solid #fff'
+                        }}></span>
+                        Falsch
+                    </span>
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: 18, height: 18,
+                            borderRadius: 4,
+                            background: 'var(--wrong)',
+                            border: '1px solid #fff',
+                            backgroundImage: 'url("/assets/images/wrong-down.png")',
+                            backgroundSize: 'cover'
+                        }}></span>
+                        Jahr/Länge zu niedrig
+                    </span>
+                        <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+                        <span style={{
+                            display: 'inline-block',
+                            width: 18, height: 18,
+                            borderRadius: 4,
+                            background: 'var(--wrong)',
+                            border: '1px solid #fff',
+                            backgroundImage: 'url("/assets/images/wrong-up.png")',
+                            backgroundSize: 'cover'
+                        }}></span>
+                        Jahr/Länge zu hoch
+                    </span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="overlay">
             <button
@@ -374,7 +454,7 @@ export default function App() {
 
             {showInstructions && (
                 <div className="instructions-modal">
-                    <div className="instructions-content">
+                    <div className="instructions-content fancy-instructions">
                         <button
                             className="instructions-close"
                             onClick={() => setShowInstructions(false)}
@@ -474,6 +554,7 @@ export default function App() {
                 )}
 
                 <GuessTable guesses={guesses}/>
+                {accessible && <GuessLegend />}
             </div>
         </div>
     );
