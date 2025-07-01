@@ -4,7 +4,7 @@ services:
     build: ./backend
     container_name: spordle-backend
     ports:
-      - "5000:5000"
+      - "5050:5000"
     volumes:
       - ./backend/data:/app/data
       - ./backend/uploads:/app/uploads
@@ -21,4 +21,4 @@ services:
     depends_on:
       - backend
     environment:
-      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_API_URL=http://localhost:5050/api

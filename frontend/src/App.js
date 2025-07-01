@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5050/api';
 
 
 function StreakBox({ count }) {
@@ -21,7 +21,7 @@ function HintSection({ misses = 0, hints = [] }) {
     const getCoverUrl = (coverUrl) => {
         if (!coverUrl) return null;
         if (coverUrl.startsWith('http')) return coverUrl;
-        return `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}${coverUrl}`;
+        return `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5050'}${coverUrl}`;
     };
 
     return (
