@@ -2,6 +2,9 @@
 
 Ein Musik-basiertes Ratespiel im Stil von Wordle, bei dem Songs anhand kurzer Audio-Ausschnitte erraten werden müssen.
 
+## DEPLOYMENT
+Bitte in die Deployment.md schauen. Dort stehen wichtige Infos, auch bzgl. MacOS-User!
+
 ## 📋 Übersicht
 
 Spordle ist ein interaktives Webspiel, das Musikliebhabende herausfordert, Songs anhand kurzer Audio-Clips zu identifizieren. Das Spiel kombiniert die Mechanik von Wordle mit Musikerkennung und bietet ein progressives Hinweissystem, das bei falschen Antworten aktiviert wird.
