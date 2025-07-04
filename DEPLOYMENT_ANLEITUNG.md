@@ -1,5 +1,8 @@
 # Spordle Setup-Anleitung
 
+## ACHTUNG für MacOS-User!
+Bitte den Branch MacOS-User clonen, da die benutzten Ports des Backends bei Apple für das Kontrollzentrum vorgesehen sind.
+
 ## Python Interpreter Probleme (Optional - nur bei Problemen)
 
 Da ich jedes mal probleme mit dem code und meinem python interpreter habe kommt es im backend immer zu vielen "Errors".
